@@ -1,5 +1,7 @@
 # Lighthouse4u
 
+[![travis-ci](https://travis-ci.org/godaddy/lighthouse4u.svg?branch=master)](https://travis-ci.org/godaddy/lighthouse4u)
+
 LH4U provides [Google Lighthouse](https://github.com/GoogleChrome/lighthouse) as a service, surfaced by both a friendly UI+API, and backed by
 [Elastic Search](https://www.elastic.co/products/elasticsearch) for all your query and [visualization needs](https://www.elastic.co/products/kibana).
 
