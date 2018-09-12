@@ -1,0 +1,4 @@
+{
+  amqp: { url: 'amqp://user:password@host:5672/lh4u' },
+  elasticsearch: { options: { host: 'http://localhost:9200' } }
+}

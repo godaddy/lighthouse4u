@@ -1,0 +1,25 @@
+{
+  http: {
+    bindings: {
+      http: {
+        port: 8080
+      }
+    }
+  },
+  amqp: {
+    secretKey: 'superSecret!' // for testing only -- this belongs in secure configuration
+  },
+  lighthouse: {
+    attempts: {
+      default: 1
+    },
+    samples: {
+      default: 1
+    }
+  },
+  elasticsearch: {
+    options: {
+      host: 'http://localhost:9200'
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "name": "lighthouse4u",
+  "version": "0.1.0",
+  "description": "LH4U provides Google Lighthouse as a service, surfaced by both a friendly UI+API, and backed by Elastic Search for all your query and visualization needs",
+  "main": "./src/cli.js",
+  "bin": {
+    "lh4u": "./bin/lh4u",
+    "lighthouse4u": "./bin/lh4u"
+  },
+  "scripts": {
+    "eslint": "eslint-godaddy -c .eslintrc src/",
+    "cover": "nyc mocha test/",
+    "pretest": "npm run eslint",
+    "report": "nyc report --reporter=lcov",
+    "start": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults -- server",
+    "test": "npm run cover && npm run report"
+  },
+  "engines": {
+    "node": ">=8.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godaddy/lighthouse4u.git"
+  },
+  "keywords": [
+    "lighthouse",
+    "google",
+    "chrome",
+    "devtools"
+  ],
+  "files": [
+    "bin",
+    "src",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md",
+    "package.json"
+  ],
+  "author": "GoDaddy.com Operating Company LLC",
+  "license": "MIT",
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "basic-auth": "^2.0.0",
+    "config-shield": "^0.2.0",
+    "cross-fetch": "^2.2.2",
+    "ejs": "^2.6.1",
+    "elasticsearch": "^15.1.1",
+    "express": "^4.16.3",
+    "json5": "^1.0.1",
+    "lighthouse": "^3.0.1",
+    "lodash": "^4.17.10",
+    "tldjs": "^2.3.1",
+    "yargs": "^12.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^5.5.0",
+    "eslint-config-godaddy": "^2.1.0",
+    "eslint-plugin-json": "^1.2.1",
+    "eslint-plugin-mocha": "^5.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "proxyquire": "^2.1.0",
+    "sinon": "^6.2.0",
+    "sinon-chai": "^3.2.0"
+  }
+}

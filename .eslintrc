@@ -1,0 +1,10 @@
+{
+  "extends": "godaddy",
+  "rules": {
+    "strict": 0,
+    "no-sync": 0,
+    "no-unused-vars": 0,
+    "id-length": 0,
+    "no-shadow": 0
+  }
+}

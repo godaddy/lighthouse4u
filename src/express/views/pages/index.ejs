@@ -1,0 +1,59 @@
+<html lang="en">
+  <head><% include ../partials/head %></head>
+  <body>
+
+    <div class="container">
+      <header><% include ../partials/header %></header>
+
+      <div class="card">
+        <h5 class="card-header">
+            Run Lighthouse
+        </h5>
+        <div class="card-body">
+          <textarea id="lighthouseOptions" class="form-control" rows="6">
+{
+  "url": "https://www.google.com/",
+  "throttling": "mobile3G",
+  "group": "web",
+  "headers": {}
+}</textarea><br />
+
+          <button id="submitWebsite" value="submit" onclick="onSubmitWebsite()" type="button" class="card-link">Submit</button>
+                
+        </div>
+        
+      </div>
+
+      <div class="card" style="margin-top:25px">
+        <h5 class="card-header">
+            Website Info
+        </h5>
+        <div class="card-body">
+          <form>
+            <div class="form-group">
+              <label>Query by</label> <label id="queryByLabel" class="form-text text-muted" style="display:inline; text-decoration: underline">Domain Name</label>
+              <input id="queryByValue" class="form-control" placeholder="www.somedomain.name OR abc123 OR http://www.somedomain.com/some/path" onkeyup="onQueryByValueChange()">
+              <small class="form-text text-muted">Type will be auto-detected as domain name, document ID, group, or requested URL.</small>
+            </div>
+            <div class="form-group">
+              <label for="queryTop">Max Results</label>
+              <input id="queryTop" class="form-control" value="10">
+              <small class="form-text text-muted">No more than 1 result will be returned if querying by document ID.</small>
+            </div>
+          </form>
+
+          <button id="getWebsite" value="get" onclick="onGetWebsite()" type="button" class="card-link">Get Website</button>
+        </div>
+        <div class="card-footer">
+          <pre style="max-height:80%"><code id="websiteInfo"></code></pre>
+        </div>
+        <div class="card-footer">
+          <a id="svgURL"></a>
+          <img id="websiteSVG" />
+        </div>
+      </div>
+      
+      <footer><% include ../partials/footer %></footer>
+    </div>    
+  </body>
+</html>
