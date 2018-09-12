@@ -7,7 +7,7 @@ const { promisify } = require('util');
 const defaultConfig = require('./default-config');
 
 const readFile = promisify(fs.readFile);
-const cshieldLoad = configShield.load;
+const cshieldLoad = configShield.load.bind(configShield);
 
 const gConfigs = {};
 
