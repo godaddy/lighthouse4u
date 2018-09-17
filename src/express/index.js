@@ -22,6 +22,7 @@ module.exports = config => {
   app.use('/api', express.json());
   app.get('/', (req, res) => res.render('pages/index'));
   app.get('/api/website', require('./api/get-website'));
+  app.get('/api/website/compare', require('./api/website/get-compare'));
   app.post('/api/website', require('./api/post-website'));
 
   // mount `http.staticFiles` if any provided

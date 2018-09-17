@@ -98,6 +98,19 @@ Fetch zero or more website results matching the criteria.
 | group | `string` | optional | Query by group ID |
 
 
+### API - `GET /api/website/compare`
+
+Similar to the single website GET, but instead compares results from `q1` with `q2`.
+
+#### Query String Options
+
+| Option | Type | Default | Desc |
+| --- | --- | --- | --- |
+| format | `string` | `json` | Format of results, be it `json` or `svg` |
+| scale | `number` | `1` | Scale of `svg` |
+| q1 | `string` | **required** | Smart query will auto-detect if `documentId`, `requestedUrl`, `domainName`, or `rootDomain` |
+| q2 | `string` | **required** | Smart query will auto-detect if `documentId`, `requestedUrl`, `domainName`, or `rootDomain` |
+
 ### API - `POST /api/website`
 
 Submit to process website with Google Lighthouse. 

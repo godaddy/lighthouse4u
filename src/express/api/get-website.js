@@ -1,4 +1,5 @@
 const getWebsite = require('../../elasticsearch/get-website');
+const convertDocToSVG = require('../../util/convert-doc-to-svg');
 
 const SVG_DEFAULT_WIDTH = 640;
 const SVG_DEFAULT_HEIGHT = 180;
@@ -24,33 +25,11 @@ module.exports = async (req, res) => {
 
   if (format === 'svg') { // send SVG
     res.setHeader('Content-Type', 'image/svg+xml');
-    // if (hits.length === 0) return void res.sendStatus(404);
-    const doc = hits[0] || { requestedUrl: JSON.stringify(req.query), state: 'error', errorMessage: 'Not Found' };
-    const { requestedUrl, state, createDate, group } = doc;
-    res.render('pages/website-svg-full', {
-      state,
-      group,
-      requestedUrl,
-      createDate: new Date(createDate).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-      performance: getScore(doc, 'performance'),
-      accessibility: getScore(doc, 'accessibility'),
-      bestPractices: getScore(doc, 'best-practices'),
-      seo: getScore(doc, 'seo'),
-      pwa: getScore(doc, 'pwa'),
-      svgWidth: Math.round(SVG_DEFAULT_WIDTH * parseFloat(scale)), svgHeight: Math.round(SVG_DEFAULT_HEIGHT * parseFloat(scale))
-    });
+    const svgOpts = {
+      svgWidth: SVG_DEFAULT_WIDTH, svgHeight: SVG_DEFAULT_HEIGHT, scale
+    };
+    res.render('pages/website-svg-full', convertDocToSVG(hits[0], svgOpts));
   } else { // else send JSON
     res.send(hits);
   }
 };
-
-function getScore(doc, cat) {
-  switch (doc.state) {
-    case 'processed':
-      return (cat in doc.categories) ? `${(doc.categories[cat].score * 100).toFixed(0)}%` : '?';
-    case 'error':
-      return 'error';
-    default:
-      return 'pending';
-  }
-}
