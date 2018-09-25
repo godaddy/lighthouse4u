@@ -5,7 +5,7 @@ const encrypt = require('../../util/encrypt');
 const crypto = require('crypto');
 
 module.exports = async (req, res) => {
-  const { url, headers, secureHeaders, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
+  const { url, headers, secureHeaders, commands, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
 
   if (!url) return void res.status(400).send('`url` required');
 
@@ -33,6 +33,15 @@ module.exports = async (req, res) => {
     cipherVector = new Buffer(crypto.randomBytes(8)).toString('hex');
     secureHeadersEncrypted = encrypt(JSON.stringify(secureHeaders), secretKey, cipherVector);
   }
+  let commandsEncrypted;
+  if (commands) {
+    if (!secretKey) {
+      return void res.status(400).send('`commands` feature not enabled');
+    }
+
+    cipherVector = cipherVector || new Buffer(crypto.randomBytes(8)).toString('hex');
+    commandsEncrypted = encrypt(JSON.stringify(commands), secretKey, cipherVector);
+  }
 
   const rootDomain = getDomain(url);
   const subDomain = getSubdomain(url);
@@ -50,6 +59,7 @@ module.exports = async (req, res) => {
     rootDomain,
     headers,
     secureHeaders: secureHeadersEncrypted,
+    commands: commandsEncrypted,
     cipherVector,
     group,
     samples,

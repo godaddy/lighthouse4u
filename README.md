@@ -127,7 +127,12 @@ Submit to process website with Google Lighthouse.
 | hostOverride | `string` | optional | Map host of request to an explicit IP. [Not yet supported by Chrome in Headless mode](https://bugs.chromium.org/p/chromium/issues/detail?id=798793) |
 | delay | `number` | (See `options.lighthouse.delay`) | Delay (in milliseconds) before test will be performed. Useful if the intended service or domain is not expected to be available for some time |
 | group | `string` | `unknown` | Group to categorize result to. Useful when searching/filtering on different groups of results |
+| commands | `array<Commmand>` | optional | [DevTool Commands](https://chromedevtools.github.io/devtools-protocol/) to be executed prior to running Lighthouse |
+| commands[idx].command | `string` | **required** | [DevTool Command](https://chromedevtools.github.io/devtools-protocol/) to execute |
+| commands[idx].options | `object` | **required** | [DevTool Command Options](https://chromedevtools.github.io/devtools-protocol/) to supply command |
 
+
+### Command
 
 
 ## Secure Configuration

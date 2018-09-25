@@ -1,4 +1,5 @@
 const lighthouse = require('lighthouse');
+const ChromeProtocol = require('lighthouse/lighthouse-core/gather/connections/cri.js');
 const chromeLauncher = require('chrome-launcher');
 const throttling = require('./throttling');
 const decrypt = require('../util/decrypt');
@@ -28,7 +29,7 @@ const ALLOWED_KEYS = {
 
 module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
   const config = Object.assign({}, baseConfig.config);
-  const { hostOverride, group, secureHeaders, cipherVector } = options;
+  const { hostOverride, group, secureHeaders, cipherVector, commands } = options;
 
   // only pull over whitelisted options
   Object.keys(options).forEach(optionKey => {
@@ -46,10 +47,18 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
     decryptedHeaders = JSON.parse(decrypt(secureHeaders, secretKey, cipherVector));
     config.settings.extraHeaders = Object.assign(config.settings.extraHeaders, decryptedHeaders);
   }
+  let decryptedCommands;
+  if (commands) {
+    const { secretKey } = amqp;
+    if (!secretKey) throw new Error('`commands` is not allowed without `amqp.secretKey` being set');
+
+    decryptedCommands = JSON.parse(decrypt(commands, secretKey, cipherVector));
+  }
 
   // throw if non-200
   // unfortunately not everyone supports HEAD, so we must perform a full GET...
   const res = await fetch(url, { headers: config.settings.extraHeaders || {}});
+
   const validateHandlerPath = baseConfig.validate[group];
   const validateHandler = validateHandlerPath && require(path.resolve(validateHandlerPath));
   validateHandler && validateHandler({ res });
@@ -66,7 +75,7 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
 
   const results = [];
   for (let sample = 0; sample < samples; sample++) {
-    results[sample] = await getLighthouseResult(url, config, { throttlingPreset, hostOverride });
+    results[sample] = await getLighthouseResult(url, config, { throttlingPreset, hostOverride, commands: decryptedCommands });
   }
 
   // take the top result
@@ -88,7 +97,16 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
   return result;
 };
 
-async function getLighthouseResult(url, config, { throttlingPreset, hostOverride }) {
+async function executeCommand(connection, instances, { id, command, options }) {
+  if (!command) throw new Error('lighthouse.connection.sendCommand requires `command`');
+  id = id || command;
+  const result = await connection.sendCommand(command, options);
+  if (result.result && result.result.subtype === 'error') throw new Error(result.result.description);
+  instances[id] = result;
+  return result;
+}
+
+async function getLighthouseResult(url, config, { throttlingPreset, hostOverride, commands = [] }) {
   const chromeOptions = { chromeFlags: config.chromeFlags };
   if (hostOverride) {
     const { host } = URL.parse(url);
@@ -100,16 +118,24 @@ async function getLighthouseResult(url, config, { throttlingPreset, hostOverride
 
   const chrome = await chromeLauncher.launch(chromeOptions);
   chromeOptions.port = chrome.port;
-
   return new Promise(async (resolve, reject) => {
     // a workaround for what appears to a bug with lighthouse that prevents graceful failure
     const timer = setTimeout(() => {
       chrome.kill(); // force cleanup
       reject(new Error('timeout!'));
-    }, 30000).unref();
+    }, 60000).unref();
 
     try {
-      const results = await lighthouse(url, chromeOptions, config);
+      const connection = new ChromeProtocol(chromeOptions.port, chromeOptions.hostname);
+      await connection.connect();
+
+      // process commands
+      const instances = {};
+      for (var cmdI = 0; cmdI < commands.length; cmdI++) {
+        await executeCommand(connection, instances, commands[cmdI]);
+      }
+
+      const results = await lighthouse(url, chromeOptions, config, connection);
       clearTimeout(timer);
       const { lhr } = results;
 
