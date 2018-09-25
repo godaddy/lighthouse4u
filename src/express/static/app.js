@@ -65,7 +65,7 @@ function onGetWebsite() {
       submitWebsite.disabled = getWebsite.disabled = null;
 
       websiteInfo.innerText = JSON.stringify(body, null, 2);
-      websiteInfo.scrollIntoView();
+      getWebsite.scrollIntoView();
 
       websiteSVG.src = `${queryURL}&format=svg&scale=1`;
       svgURL.href = svgURL.innerText = websiteSVG.src;
