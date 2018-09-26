@@ -19,7 +19,9 @@ describe('/express/api/post-website', async () => {
       'throttling': 'mobile3G',
       'group': 'web',
       'headers': {},
-      'secureHeaders': { secretKey: 'secretValue' }
+      'secureHeaders': { secretKey: 'secretValue' },
+      'cookies': [{ cookie1: 'c1', cookie2: { domain: 'domain', url: 'url', value: 'c2' } }],
+      'commands': [{ command: 'command' }]
     };
     lib = proxyquire(libSrc, mocks);
   });
