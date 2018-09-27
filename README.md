@@ -30,7 +30,7 @@ Or locally to this repo via `npm start` (you'll need to create `test/config/loca
 | .indexType | `string` | `lh4u` | Index type in ES |
 | .index | `ESIndexOptions` | [See Defaults](./src/config/default-config.js#L12) | Options supplied to driver upon creation of ES index |
 | amqp | | | [AMQP Options](https://www.npmjs.com/package/amqplib) to connect to RabbitMQ or any other AMQP-compatible interface |
-| .url | `string` | `amqp://guest:guest@localhost:5672/lh4u` | Connection string following the typical `{username}:{password}@{host}:{port}/{path}` format |
+| .url | `string` | `amqp://guest:guest@ localhost:5672/lh4u` | Connection string following the typical `{username}:{password}@{host}:{port}/{path}` format |
 | .idleDelayMs | `number` | `1000` | Time (in MS) between queue checks when queue is empty |
 | .secretKey | `string` | optional | Required only if encrypting/decrypting `secureHeaders`. Should be stored in [secure configuration](#secure-configuration) |
 | .queue | `AmqpOptions` | | Queue options |
