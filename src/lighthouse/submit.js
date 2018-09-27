@@ -1,3 +1,4 @@
+const { parse } = require('url');
 const lighthouse = require('lighthouse');
 const ChromeProtocol = require('lighthouse/lighthouse-core/gather/connections/cri.js');
 const chromeLauncher = require('chrome-launcher');
@@ -29,7 +30,7 @@ const ALLOWED_KEYS = {
 
 module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
   const config = Object.assign({}, baseConfig.config);
-  const { hostOverride, group, secureHeaders, cipherVector, commands } = options;
+  const { hostOverride, group, secureHeaders, cipherVector, commands, cookies } = options;
 
   // only pull over whitelisted options
   Object.keys(options).forEach(optionKey => {
@@ -54,6 +55,13 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
 
     decryptedCommands = JSON.parse(decrypt(commands, secretKey, cipherVector));
   }
+  let decryptedCookies;
+  if (cookies) {
+    const { secretKey } = amqp;
+    if (!secretKey) throw new Error('`cookies` is not allowed without `amqp.secretKey` being set');
+
+    decryptedCookies = JSON.parse(decrypt(cookies, secretKey, cipherVector));
+  }
 
   // throw if non-200
   // unfortunately not everyone supports HEAD, so we must perform a full GET...
@@ -75,7 +83,7 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
 
   const results = [];
   for (let sample = 0; sample < samples; sample++) {
-    results[sample] = await getLighthouseResult(url, config, { throttlingPreset, hostOverride, commands: decryptedCommands });
+    results[sample] = await getLighthouseResult(url, config, { throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies });
   }
 
   // take the top result
@@ -97,16 +105,88 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
   return result;
 };
 
-async function executeCommand(connection, instances, { id, command, options }) {
+async function executeCommand(connection, instances, { id, command, options, waitFor, waitTimeout }) {
   if (!command) throw new Error('lighthouse.connection.sendCommand requires `command`');
   id = id || command;
+  const waiter = waitFor ? createCommandWaiter(connection, { waitFor, waitTimeout }) : null;
   const result = await connection.sendCommand(command, options);
+  if (waiter) {
+    await waiter;
+  }
   if (result.result && result.result.subtype === 'error') throw new Error(result.result.description);
   instances[id] = result;
   return result;
 }
 
-async function getLighthouseResult(url, config, { throttlingPreset, hostOverride, commands = [] }) {
+function createCommandWaiter(connection, { waitFor, waitTimeout = 30000 }) {
+  return new Promise((resolve, reject) => {
+    let timer;
+
+    const listener = event => {
+      if (event.method === waitFor) {
+        clearTimeout(timer);
+        connection._eventEmitter.removeAllListeners();
+        resolve();
+      }
+    };
+
+    timer = setTimeout(() => {
+      connection._eventEmitter.removeAllListeners();
+      reject(new Error(`Timed out waiting for ${waitFor} after ${waitTimeout}ms`));
+    }, waitTimeout);
+
+    connection.on('protocolevent', listener);
+  });
+}
+
+function getCommandsFromCookies(cookies, { url }) {
+  const commands = [{
+    command: 'Page.enable' // required for event tracking
+  }];
+
+  const urlInfo = parse(url);
+
+  let currentUrl;
+  cookies.forEach(cookie => {
+    const key = Object.keys(cookie)[0];
+    const v = cookie[key];
+    const value = typeof v === 'object' ? v : {
+      value: v,
+      secure: /^https/.test(url)
+    };
+    value.url = value.url || url; // use request url unless an explicit url is provided
+    value.domain = value.domain || urlInfo.hostname.split('.').splice(-2, 2).join('.');
+
+    if (value.url !== currentUrl) {
+      commands.push({
+        command: 'Page.navigate',
+        waitFor: 'Page.loadEventFired',
+        options: {
+          url: value.url
+        }
+      });
+
+      currentUrl = value.url;
+    }
+
+    const expressionDomain = value.domain ? `; domain=${value.domain}` : '';
+    const expressionPath = value.path ? `; path=${value.path}` : '';
+    const expressionSecure = value.secure ? '; secure' : '';
+    const expressionHttpOnly = value.httpOnly ? '; httpOnly' : '';
+    const expression = `document.cookie="${key}=${value.value}${expressionDomain}${expressionPath}${expressionSecure}${expressionHttpOnly}"`;
+
+    commands.push({
+      command: 'Runtime.evaluate',
+      options: {
+        expression
+      }
+    });
+  });
+
+  return commands;
+}
+
+async function getLighthouseResult(url, config, { throttlingPreset, hostOverride, commands = [], cookies = [] }) {
   const chromeOptions = { chromeFlags: config.chromeFlags };
   if (hostOverride) {
     const { host } = URL.parse(url);
@@ -128,6 +208,13 @@ async function getLighthouseResult(url, config, { throttlingPreset, hostOverride
     try {
       const connection = new ChromeProtocol(chromeOptions.port, chromeOptions.hostname);
       await connection.connect();
+
+      // process cookies
+      let cookieCommands;
+      if (cookies.length > 0) {
+        cookieCommands = getCommandsFromCookies(cookies, { url });
+        commands = cookieCommands.concat(commands);
+      }
 
       // process commands
       const instances = {};
