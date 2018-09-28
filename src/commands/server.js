@@ -4,6 +4,8 @@ module.exports = {
   command: 'server',
   desc: 'Start HTTP Server',
   handler: async argv => {
+    // ! deps must be moved into function callback to avoid loading deps prior to start events
+
     if (argv.beforeStart) {
       const beforeStart = require(resolve(argv.beforeStart));
       if (beforeStart) {

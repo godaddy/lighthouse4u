@@ -1,13 +1,14 @@
-const { getConfigs } = require('../config');
-const getESClient = require('../elasticsearch/client');
-const initES = require('../elasticsearch/init');
-const getAMQPClient = require('../amqp/client');
-const initAMQP = require('../amqp/init');
-
 module.exports = {
   command: 'init',
   desc: 'Initialize Elasticsearch & AMQP',
   handler: async argv => {
+    // ! deps must be moved into function callback to avoid loading deps prior to start events
+    const { getConfigs } = require('../config');
+    const getESClient = require('../elasticsearch/client');
+    const initES = require('../elasticsearch/init');
+    const getAMQPClient = require('../amqp/client');
+    const initAMQP = require('../amqp/init');
+
     const configs = await getConfigs(argv);
 
     const config = configs[0];
