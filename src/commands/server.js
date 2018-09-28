@@ -4,10 +4,14 @@ module.exports = {
   command: 'server',
   desc: 'Start HTTP Server',
   handler: async argv => {
+    const { getConfigs } = require('../config');
+    const configs = await getConfigs(argv);
+    const config = configs[0];
+
     if (argv.beforeStart) {
       const beforeStart = require(resolve(argv.beforeStart));
       if (beforeStart) {
-        beforeStart(argv); // forward argv
+        beforeStart(config); // forward config
       }
     }
 
@@ -16,11 +20,6 @@ module.exports = {
     const startListener = require('../http/start');
     const processQueue = require('../amqp/process-queue');
     const getApp = require('../express');
-    const { getConfigs } = require('../config');
-
-    const configs = await getConfigs(argv);
-
-    const config = configs[0];
 
     const app = getApp(config);
     startListener(app);
