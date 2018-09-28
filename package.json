@@ -12,7 +12,7 @@
     "cover": "nyc mocha test/",
     "pretest": "npm run eslint",
     "report": "nyc report --reporter=lcov",
-    "start": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults -- server",
+    "start": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults --before-start ./test/local/before-start.js -- server",
     "test": "npm run cover && npm run report"
   },
   "engines": {

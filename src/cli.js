@@ -4,6 +4,10 @@ const pkg = require('../package.json');
 
 yargs
   .commandDir(path.resolve(__dirname, '..', 'src', 'commands'))
+  .option('before-start', {
+    describe: 'Custom code to execute before starting HTTP Server',
+    type: 'string'
+  })
   .option('config', {
     describe: 'One or more configuration files (with or without extension)',
     type: 'array',
