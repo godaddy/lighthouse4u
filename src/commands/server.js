@@ -4,18 +4,18 @@ module.exports = {
   command: 'server',
   desc: 'Start HTTP Server',
   handler: async argv => {
-    const { getConfigs } = require('../config');
-    const configs = await getConfigs(argv);
-    const config = configs[0];
-
     if (argv.beforeStart) {
       const beforeStart = require(resolve(argv.beforeStart));
       if (beforeStart) {
-        beforeStart(config); // forward config
+        beforeStart(argv); // forward argv
       }
     }
 
     process.on('unhandledRejection', err => console.error(err.stack || err));
+
+    const { getConfigs } = require('../config');
+    const configs = await getConfigs(argv);
+    const config = configs[0];
 
     const startListener = require('../http/start');
     const processQueue = require('../amqp/process-queue');
