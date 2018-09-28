@@ -8,7 +8,7 @@ module.exports = {
 
     if (argv.beforeStart) {
       const beforeStart = require(resolve(argv.beforeStart));
-      if (beforeStart) {
+      if (typeof beforeStart === 'function') {
         beforeStart(argv); // forward argv
       }
     }
