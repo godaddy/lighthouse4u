@@ -1,6 +1,6 @@
 {
   "name": "lighthouse4u",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "LH4U provides Google Lighthouse as a service, surfaced by both a friendly UI+API, and backed by Elastic Search for all your query and visualization needs",
   "main": "./src/cli.js",
   "bin": {
@@ -12,6 +12,7 @@
     "cover": "nyc mocha test/",
     "pretest": "npm run eslint",
     "report": "nyc report --reporter=lcov",
+    "init": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults -- init",
     "start": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults --before-start ./test/local/before-start.js -- server",
     "test": "npm run cover && npm run report"
   },
