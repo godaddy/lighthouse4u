@@ -26,12 +26,12 @@ module.exports = {
             rootDomain: { type: 'string', index: 'not_analyzed' },
             group: { type: 'string', index: 'not_analyzed' },
             categories: { type: 'object', properties: {
-              accessibility: { type: 'object', properties: { score: { type: 'double' } }},
-              'best-practices': { type: 'object', properties: { score: { type: 'double' } }},
-              performance: { type: 'object', properties: { score: { type: 'double' } }},
-              pwa: { type: 'object', properties: { score: { type: 'double' } }},
-              seo: { type: 'object', properties: { score: { type: 'double' } }},
-            } },
+              'accessibility': { type: 'object', properties: { score: { type: 'double' }}},
+              'best-practices': { type: 'object', properties: { score: { type: 'double' }}},
+              'performance': { type: 'object', properties: { score: { type: 'double' }}},
+              'pwa': { type: 'object', properties: { score: { type: 'double' }}},
+              'seo': { type: 'object', properties: { score: { type: 'double' }}}
+            }},
             createDate: { type: 'date' }
           }
         }

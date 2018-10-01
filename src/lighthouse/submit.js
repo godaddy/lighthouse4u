@@ -66,6 +66,7 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
   // throw if non-200
   // unfortunately not everyone supports HEAD, so we must perform a full GET...
   const res = await fetch(url, { headers: config.settings.extraHeaders || {}});
+  if (res.status >= 400) throw new Error(`requestedUrl '${url}' returned status ${res.status}`);
 
   const validateHandlerPath = baseConfig.validate[group];
   const validateHandler = validateHandlerPath && require(path.resolve(validateHandlerPath));
