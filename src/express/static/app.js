@@ -8,23 +8,47 @@ const cancelGetWebsite = document.getElementById('cancelGetWebsite');
 const queryTop = document.getElementById('queryTop');
 const websiteSVG = document.getElementById('websiteSVG');
 const svgURL = document.getElementById('svgURL');
+const useBatch = document.getElementById('useBatch');
+const batchFile = document.getElementById('batchFile');
+
+let batchFileText;
+const batchFileReader = new FileReader();
+batchFileReader.onload = e => {
+  batchFileText = e.target.result;
+  console.log(batchFileText);
+};
+batchFile.addEventListener('change', evt => {
+  batchFileReader.readAsText(evt.target.files[0]);
+}, false);
 
 function onSubmitWebsite() {
+  const lhOptions = JSON.parse(lighthouseOptions.value);
+  if (useBatch.checked) {
+    if (!batchFileText) {
+      return void alert('No batch file provided, try again');
+    }
+
+    lhOptions.batch = batchFileText;
+  }
+  const lhOptionsJSON = JSON.stringify(lhOptions);
   submitWebsite.disabled = getWebsite.disabled = true;
   fetch('/api/website', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
     },
-    body: lighthouseOptions.value
+    body: lhOptionsJSON
   })
     .then(res => res.json())
     .then(body => {
       submitWebsite.disabled = getWebsite.disabled = null;
 
-      queryByValue.value = body.id;
-      websiteInfo.innerText = JSON.stringify([body], null, 2);
+      const arr = Array.isArray(body) ? body : [body];
+      queryByValue.value = arr[0].id;
+      websiteInfo.innerText = JSON.stringify(arr, null, 2);
       websiteInfo.scrollIntoView();
+
+      updateSVG();
     })
     .catch(err => {
       console.error('Oops!', err.stack || err);
@@ -55,10 +79,21 @@ function onQueryByValueChange() {
   queryByLabel.innerHTML = label;
 }
 
+function getQueryURL() {
+  const queryKey = getQueryType();
+  return `/api/website?top=${queryTop.value}&${queryKey}=${encodeURIComponent(queryByValue.value)}`;
+}
+
+function updateSVG(queryURL) {
+  if (!queryURL) queryURL = getQueryURL();
+
+  websiteSVG.src = `${queryURL}&format=svg&scale=1`;
+  svgURL.href = svgURL.innerText = websiteSVG.src;
+}
+
 function onGetWebsite() {
   submitWebsite.disabled = getWebsite.disabled = true;
-  const queryKey = getQueryType();
-  const queryURL = `/api/website?top=${queryTop.value}&${queryKey}=${encodeURIComponent(queryByValue.value)}`;
+  const queryURL = getQueryURL();
   fetch(queryURL)
     .then(res => res.json())
     .then(body => {
@@ -67,8 +102,7 @@ function onGetWebsite() {
       websiteInfo.innerText = JSON.stringify(body, null, 2);
       getWebsite.scrollIntoView();
 
-      websiteSVG.src = `${queryURL}&format=svg&scale=1`;
-      svgURL.href = svgURL.innerText = websiteSVG.src;
+      updateSVG(queryURL);
     })
     .catch(err => {
       console.error('Oops!', err.stack || err);
@@ -77,6 +111,10 @@ function onGetWebsite() {
       submitWebsite.disabled = getWebsite.disabled = null;
     })
   ;
+}
+
+function toggleUseBatch() {
+  batchFile.style.display = useBatch.checked ? null : 'none';
 }
 
 const query = document.location.search.substr(1).split('&')
