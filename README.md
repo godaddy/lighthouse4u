@@ -120,6 +120,7 @@ Submit to process website with Google Lighthouse.
 | Option | Type | Default | Desc |
 | --- | --- | --- | --- |
 | url | `string` | **required** | URL to process via Google Lighthouse |
+| wait | `number` | optional | Block returning until job is complete, or the `wait` time (in ms) has elapsed, resulting in a partial 206 response |
 | headers | `hash<string>` | optional | Collection of HTTP headers to supply in request |
 | secureHeaders | hash<string> | optional | Same use as `headers`, but stored securely in queue, and never persisted to ElasticSearch |
 | samples | `number` | (See `options.lighthouse.samples`) | Number of samples to take before recording result |

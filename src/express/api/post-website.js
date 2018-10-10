@@ -2,11 +2,12 @@ const indexWebsite = require('../../elasticsearch/index-website');
 const submitWebsite = require('../../amqp/submit-website');
 const { getDomain, getSubdomain } = require('tldjs');
 const encrypt = require('../../util/encrypt');
+const getWebsite = require('../../elasticsearch/get-website');
 const crypto = require('crypto');
 const papa = require('papaparse');
 
 module.exports = async (req, res) => {
-  const { batch, url, headers, secureHeaders, commands, cookies, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
+  const { batch, wait, url, headers, secureHeaders, commands, cookies, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
 
   let documentRequests;
 
@@ -102,7 +103,7 @@ module.exports = async (req, res) => {
   const groups = (typeof req.groupsAllowed === 'string') ? [req.groupsAllowed] : req.groupsAllowed;
 
   try {
-    const documents = documentRequests.map(({ url, group }) => {
+    let documents = documentRequests.map(({ url, group }) => {
 
       if (req.groupsAllowed && (typeof req.groupsAllowed !== 'string' || req.groupsAllowed !== '*')) {
         // verify the requested group is allowed
@@ -151,6 +152,16 @@ module.exports = async (req, res) => {
 
     await Promise.all(documentPromises);
 
+    if (wait) {
+      const processedDocs = await waitForProcessedDocs(req.app, documents, wait);
+      if (processedDocs) {
+        documents = processedDocs;
+      } else {
+        // if timeout, respond with partial to signal delta
+        res.status(206); // partial
+      }
+    }
+
     res.send(batch ? documents : documents[0]); // forward document(s) back to caller
   } catch (ex) {
     console.error('indexWebsite.error:', ex.stack || ex);
@@ -158,3 +169,23 @@ module.exports = async (req, res) => {
   }
 
 };
+
+async function waitForProcessedDocs(app, documents, timeout) {
+  const start = Date.now();
+
+  do {
+    documents = await Promise.all(documents.map(doc => {
+      if (doc.state === 'processed' || doc.state === 'error') return doc; // nothing more to do
+
+      return getWebsite(app, { documentId: doc.id }).then(doc => { doc._source.id = doc._id; return doc._source; });
+    }));
+
+    if (!documents.find(doc => (doc.state !== 'processed' && doc.state !== 'error'))) {
+      // return final completed states if available
+      return documents;
+    }
+
+    // sleep... pulling sucks, but more ideal for server to handle than client
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  } while ((Date.now() - start) < timeout);
+}
