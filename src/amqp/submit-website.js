@@ -1,5 +1,4 @@
 module.exports = async (app, msg) => {
-
   const config = app.get('config');
   const amqp = app.get('amqp');
 
@@ -12,4 +11,5 @@ module.exports = async (app, msg) => {
     throw new Error('Failed to write to queue');
   }
 
+  await channel.close();
 };

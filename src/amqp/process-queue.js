@@ -22,7 +22,7 @@ async function main(app) {
 async function getNextMessage(options) {
   const { queueName, idleDelayMs, channel, config } = options;
   const { lighthouse } = config;
-  const msg = await channel.get(queueName);
+  const msg = await channel.get(queueName, { noAck: false });
 
   if (!msg) return void setTimeout(getNextMessage.bind(null, options), idleDelayMs);
 
@@ -59,7 +59,7 @@ async function getNextMessage(options) {
     const waitBeforeRequeue = Math.min(lighthouse.delay.maxRequeueDelayMs, delayTime - Date.now());
     setTimeout(() => {
       // queue the modified request
-      channel.sendToQueue(config.amqp.queue.name, new Buffer(JSON.stringify(data)));
+      channel.sendToQueue(config.amqp.queue.name, Buffer.from(JSON.stringify(data)));
 
       // drop the old msg
       channel.ack(msg);
