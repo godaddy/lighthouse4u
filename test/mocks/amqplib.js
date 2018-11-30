@@ -3,7 +3,8 @@ const { stub } = require('sinon');
 function channel() {
   return {
     assertQueue: stub().resolves(),
-    sendToQueue: stub().returns(true)
+    sendToQueue: stub().returns(true),
+    close: stub()
   };
 }
 
