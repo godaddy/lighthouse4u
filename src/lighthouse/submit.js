@@ -246,10 +246,10 @@ async function getLighthouseResult(url, config, { throttlingPreset, hostOverride
       // https://github.com/GoogleChrome/lighthouse/blob/master/typings/lhr.d.ts
       // use results.report for the HTML/JSON/CSV output as a string
       // use results.artifacts for the trace/screenshots/other specific case you need (rarer)
-      chrome.kill().then(() => resolve(lhr));
+      chrome.kill().then(() => resolve(lhr)).catch(ex => reject(ex));
     } catch (ex) {
       clearTimeout(timer);
-      chrome.kill().then(() => reject(ex));
+      chrome.kill().then(() => reject(ex)).catch(() => reject(ex));
     }
   });
 }
