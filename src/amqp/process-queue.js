@@ -1,5 +1,6 @@
 const submitWebsite = require('../lighthouse/submit');
 const indexWebsite = require('../elasticsearch/index-website');
+const getSafeDocument = require('../util/get-safe-document');
 
 module.exports = async app => {
   main(app);
@@ -89,7 +90,7 @@ async function processMessage({ app, config, channel, attempts }, msg, data) {
       channel.nack(msg);
     }
   } catch (ex) {
-    console.error(`lighthouse failed! attempt ${data.attempt} of ${attempts}`, data, ex.stack || ex);
+    console.error(`lighthouse failed! attempt ${data.attempt} of ${attempts}`, getSafeDocument(data), ex.stack || ex);
 
     // retry unless out of attempts
     if (data.attempt >= attempts) {
@@ -106,7 +107,7 @@ async function processMessage({ app, config, channel, attempts }, msg, data) {
     try {
       await indexWebsite(app, data);
     } catch (ex2) {
-      console.error('failed to write to ES!', data, ex2.stack || ex2);
+      console.error('failed to write to ES!', getSafeDocument(data), ex2.stack || ex2);
 
       // nothing more to do
     }
