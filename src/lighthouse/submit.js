@@ -14,18 +14,22 @@ const OPTIONS_TO_CONFIG = {
   headers: 'settings.extraHeaders'
 };
 
+// FORMAT: https://github.com/GoogleChrome/lighthouse/blob/master/docs/understanding-results.md#properties
+
 const ALLOWED_KEYS = {
   userAgent: true,
+  environment: true,
   lighthouseVersion: true,
   fetchTime: true,
   requestedUrl: true,
   finalUrl: true,
   runWarnings: false,
-  audits: false,
+  audits: true,
   configSettings: true,
   categories: true,
   categoryGroups: false,
-  timing: true
+  timing: true,
+  i18n: false
 };
 
 module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
@@ -80,11 +84,12 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
     config.settings.throttling = throttling[config.settings.throttling];
   }
 
+  const auditMode = options.auditMode || baseConfig.auditMode;
   const samples = Math.min(Math.max(options.samples || baseConfig.samples.default, baseConfig.samples.range[0]), baseConfig.samples.range[1]);
 
   const results = [];
   for (let sample = 0; sample < samples; sample++) {
-    results[sample] = await getLighthouseResult(url, config, { throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies });
+    results[sample] = await getLighthouseResult(url, config, { auditMode, throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies });
   }
 
   // take the top result
@@ -187,7 +192,7 @@ function getCommandsFromCookies(cookies, { url }) {
   return commands;
 }
 
-async function getLighthouseResult(url, config, { throttlingPreset, hostOverride, commands = [], cookies = [] }) {
+async function getLighthouseResult(url, config, { auditMode, throttlingPreset, hostOverride, commands = [], cookies = [] }) {
   const chromeOptions = { chromeFlags: config.chromeFlags };
   if (hostOverride) {
     const { host } = URL.parse(url);
@@ -241,6 +246,26 @@ async function getLighthouseResult(url, config, { throttlingPreset, hostOverride
         // no need for `auditRefs`
         delete cat.auditRefs;
       });
+
+      // process `audits`
+
+      let auditV;
+      if (!auditMode) {
+        lhr.audits = null;
+      } else {
+        Object.keys(lhr.audits || {}).forEach(k => {
+          auditV = lhr.audits[k];
+          delete auditV.displayValue;
+          if (auditMode === 'simple' || auditMode === 'details') {
+            delete auditV.id;
+            delete auditV.title;
+            delete auditV.description;
+          }
+          if (auditMode === 'simple') {
+            delete auditV.details;
+          }
+        });
+      }
 
       // use results.lhr for the JS-consumeable output
       // https://github.com/GoogleChrome/lighthouse/blob/master/typings/lhr.d.ts

@@ -128,6 +128,7 @@ Submit to process website with Google Lighthouse.
 | hostOverride | `string` | optional | Map host of request to an explicit IP. [Not yet supported by Chrome in Headless mode](https://bugs.chromium.org/p/chromium/issues/detail?id=798793) |
 | delay | `number` | (See `options.lighthouse.delay`) | Delay (in milliseconds) before test will be performed. Useful if the intended service or domain is not expected to be available for some time |
 | group | `string` | `unknown` | Group to categorize result to. Useful when searching/filtering on different groups of results |
+| auditMode | `false|'simple'|'details'|'all'` | `'simple'` | How much of the [audits](https://github.com/GoogleChrome/lighthouse/blob/master/docs/understanding-results.md#properties) data to persist to storage |
 | cookies | `array<{name=string|Cookie}>` | optional | Auto-translates cookies to set to the required `commands` |
 | cookies[idx].value | `string` | **required** | Value to set for cookie |
 | cookies[idx].domain | `string` | optional | Domain to apply cookie to. Defaults to root of `requestedUrl` domain |

@@ -103,6 +103,7 @@ module.exports = {
     validate: {
       // 'group-name': './validate/group-name.js' // throws if invalid response
     },
+    auditMode: 'simple', // how much of the `audits` report to retain (false, 'simple', 'details', 'all') -- it's very verbose: https://github.com/GoogleChrome/lighthouse/blob/master/docs/understanding-results.md#audits
     concurrency: 1, // number of concurrent lighthouse tests permitted -- a value greater than 1 may negatively impact accuracy of reports
     samples: { // number of tests run before median performance report is determined
       default: 3,
