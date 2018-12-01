@@ -1,0 +1,683 @@
+{
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/70.0.3538.110 Safari/537.36",
+  "environment": {
+    "networkUserAgent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5 Build/MRA58N) AppleWebKit/537.36(KHTML, like Gecko) Chrome/66.0.3359.30 Mobile Safari/537.36",
+    "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/70.0.3538.110 Safari/537.36",
+    "benchmarkIndex": 1248
+  },
+  "lighthouseVersion": "3.1.1",
+  "fetchTime": "2018-12-01T15:29:33.347Z",
+  "requestedUrl": "http://www.allibrinkerhoff.com/",
+  "finalUrl": "https://allibrinkerhoff.com/",
+  "runWarnings": null,
+  "audits": {
+    "is-on-https": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false
+    },
+    "redirects-http": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "service-worker": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false
+    },
+    "works-offline": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false,
+      "warnings": [
+        "You may be not loading offline because your test URL (http://www.allibrinkerhoff.com/) was redirected to \"https://allibrinkerhoff.com/\". Try testing the second URL directly."
+      ]
+    },
+    "viewport": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true,
+      "warnings": []
+    },
+    "without-javascript": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "first-contentful-paint": {
+      "score": 0.55,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 3814.5359999999996
+    },
+    "first-meaningful-paint": {
+      "score": 0.37,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 4594.563999999999
+    },
+    "load-fast-enough-for-pwa": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": 9193.85
+    },
+    "speed-index": {
+      "score": 0.55,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 5489.316725309338
+    },
+    "screenshot-thumbnails": {
+      "score": null,
+      "scoreDisplayMode": "informative",
+      "rawValue": true
+    },
+    "final-screenshot": {
+      "score": null,
+      "scoreDisplayMode": "informative",
+      "rawValue": true
+    },
+    "estimated-input-latency": {
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 32.4
+    },
+    "errors-in-console": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": 0
+    },
+    "time-to-first-byte": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": 25.631
+    },
+    "first-cpu-idle": {
+      "score": 0.33,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 8014.955000000001
+    },
+    "interactive": {
+      "score": 0.33,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 9193.85
+    },
+    "user-timings": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "critical-request-chains": {
+      "score": null,
+      "scoreDisplayMode": "informative",
+      "rawValue": false
+    },
+    "redirects": {
+      "score": 0.46,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 1121.415
+    },
+    "webapp-install-banner": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false,
+      "explanation": "Failures: No manifest was fetched,\nSite does not register a service worker."
+    },
+    "splash-screen": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false,
+      "explanation": "Failures: No manifest was fetched."
+    },
+    "themed-omnibox": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false,
+      "explanation": "Failures: No manifest was fetched."
+    },
+    "manifest-short-name-length": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "content-width": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true,
+      "explanation": ""
+    },
+    "image-aspect-ratio": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true,
+      "warnings": []
+    },
+    "deprecations": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "mainthread-work-breakdown": {
+      "score": 0.12,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 7534.343999999999
+    },
+    "bootup-time": {
+      "score": 0.85,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 1569.124
+    },
+    "uses-rel-preload": {
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 0
+    },
+    "uses-rel-preconnect": {
+      "score": 0.71,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 369.93399999999997
+    },
+    "font-display": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false
+    },
+    "network-requests": {
+      "score": null,
+      "scoreDisplayMode": "informative",
+      "rawValue": 82
+    },
+    "metrics": {
+      "score": null,
+      "scoreDisplayMode": "informative",
+      "rawValue": 9193.85
+    },
+    "pwa-cross-browser": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "pwa-page-transitions": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "pwa-each-page-has-url": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "accesskeys": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "aria-allowed-attr": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "aria-required-attr": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "aria-required-children": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "aria-required-parent": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "aria-roles": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "aria-valid-attr-value": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "aria-valid-attr": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "audio-caption": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "button-name": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "bypass": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "color-contrast": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false
+    },
+    "definition-list": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "dlitem": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "document-title": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "duplicate-id": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "frame-title": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false
+    },
+    "html-has-lang": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "html-lang-valid": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "image-alt": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "input-image-alt": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "label": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "layout-table": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "link-name": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false
+    },
+    "list": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "listitem": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "meta-refresh": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "meta-viewport": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "object-alt": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "tabindex": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "td-headers-attr": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "th-has-data-cells": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "valid-lang": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "video-caption": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "video-description": {
+      "score": null,
+      "scoreDisplayMode": "not-applicable",
+      "rawValue": true
+    },
+    "custom-controls-labels": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "custom-controls-roles": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "focus-traps": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "focusable-controls": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "heading-levels": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "interactive-element-affordance": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "logical-tab-order": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "managed-focus": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "offscreen-content-hidden": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "use-landmarks": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "visual-order-follows-dom": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "uses-long-cache-ttl": {
+      "score": 0.13,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 507337.5946797763
+    },
+    "total-byte-weight": {
+      "score": 0.09,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 6199100
+    },
+    "offscreen-images": {
+      "score": 0.88,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 150,
+      "warnings": []
+    },
+    "render-blocking-resources": {
+      "score": 0.45,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 1154
+    },
+    "unminified-css": {
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 0
+    },
+    "unminified-javascript": {
+      "score": 0.58,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 610,
+      "warnings": []
+    },
+    "unused-css-rules": {
+      "score": 0.44,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 1230
+    },
+    "uses-webp-images": {
+      "score": 0,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 11950,
+      "warnings": []
+    },
+    "uses-optimized-images": {
+      "score": 0,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 5600,
+      "warnings": []
+    },
+    "uses-text-compression": {
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 0
+    },
+    "uses-responsive-images": {
+      "score": 0,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 6360,
+      "warnings": []
+    },
+    "efficient-animated-content": {
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 0
+    },
+    "appcache-manifest": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "doctype": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "dom-size": {
+      "score": 0.87,
+      "scoreDisplayMode": "numeric",
+      "rawValue": 867
+    },
+    "external-anchors-use-rel-noopener": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false,
+      "warnings": []
+    },
+    "geolocation-on-start": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "no-document-write": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "no-vulnerable-libraries": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false
+    },
+    "no-websql": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "notification-on-start": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "password-inputs-can-be-pasted-into": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "uses-http2": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "uses-passive-event-listeners": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false
+    },
+    "meta-description": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "http-status-code": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "font-size": {
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "rawValue": false,
+      "explanation": "77.28% of text is too small."
+    },
+    "link-text": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "is-crawlable": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "robots-txt": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "hreflang": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "plugins": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "canonical": {
+      "score": 1,
+      "scoreDisplayMode": "binary",
+      "rawValue": true
+    },
+    "mobile-friendly": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    },
+    "structured-data": {
+      "score": null,
+      "scoreDisplayMode": "manual",
+      "rawValue": false
+    }
+  },
+  "configSettings": {
+    "output": "json",
+    "maxWaitForLoad": 45000,
+    "throttlingMethod": "simulate",
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 562.5,
+      "downloadThroughputKbps": 1474.5600000000002,
+      "uploadThroughputKbps": 675,
+      "cpuSlowdownMultiplier": 4
+    },
+    "auditMode": false,
+    "gatherMode": false,
+    "disableStorageReset": false,
+    "disableDeviceEmulation": false,
+    "locale": "en-US",
+    "blockedUrlPatterns": null,
+    "additionalTraceCategories": null,
+    "extraHeaders": {},
+    "onlyAudits": null,
+    "onlyCategories": null,
+    "skipAudits": null
+  },
+  "categories": {
+    "performance": {
+      "title": "Performance",
+      "id": "performance",
+      "score": 0.44
+    },
+    "pwa": {
+      "title": "Progressive Web App",
+      "description": "These checks validate the aspects of a Progressive Web App, as specified by the baseline [PWA Checklist](https://developers.google.com/web/progressive-web-apps/checklist).",
+      "manualDescription": "These checks are required by the baseline [PWA Checklist](https://developers.google.com/web/progressive-web-apps/checklist) but are not automatically checked by Lighthouse. They do not affect your score but it's important that you verify them manually.",
+      "id": "pwa",
+      "score": 0.5
+    },
+    "accessibility": {
+      "title": "Accessibility",
+      "description": "These checks highlight opportunities to [improve the accessibility of your web app](https://developers.google.com/web/fundamentals/accessibility). Only a subset of accessibility issues can be automatically detected so manual testing is also encouraged.",
+      "manualDescription": "These items address areas which an automated testing tool cannot cover. Learn more in our guide on [conducting an accessibility review](https://developers.google.com/web/fundamentals/accessibility/how-to-review).",
+      "id": "accessibility",
+      "score": 0.81
+    },
+    "best-practices": {
+      "title": "Best Practices",
+      "id": "best-practices",
+      "score": 0.73
+    },
+    "seo": {
+      "title": "SEO",
+      "description": "These checks ensure that your page is optimized for search engine results ranking. There are additional factors Lighthouse does not check that may affect your search ranking. [Learn more](https://support.google.com/webmasters/answer/35769).",
+      "manualDescription": "Run these additional validators on your site to check additional SEO best practices.",
+      "id": "seo",
+      "score": 0.91
+    }
+  },
+  "categoryGroups": null,
+  "timing": {
+    "total": 22396
+  },
+  "i18n": null
+}

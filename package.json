@@ -1,6 +1,6 @@
 {
   "name": "lighthouse4u",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "description": "LH4U provides Google Lighthouse as a service, surfaced by both a friendly UI+API, and backed by Elastic Search for all your query and visualization needs",
   "main": "./src/cli.js",
   "bin": {
