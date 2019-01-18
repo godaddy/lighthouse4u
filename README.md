@@ -184,7 +184,7 @@ Submit to process website with Google Lighthouse.
 
 * [AWS SQS](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-sqs) - Support for
   Simple Queue Service.
-* [File System](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-amqp) - Support for
+* [AMQP](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-amqp) - Support for
   RabbitMQ and other AMQP compatible queues.
 
 
