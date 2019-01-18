@@ -1,5 +1,4 @@
-const getWebsite = require('../../../elasticsearch/get-website');
-const convertQueryToES = require('../../../elasticsearch/convert-query-to-es');
+const getWebsite = require('../../util/get-website');
 const convertDocToSVG = require('../../../util/convert-doc-to-svg');
 
 const SVG_DEFAULT_WIDTH = 640;
@@ -13,41 +12,27 @@ module.exports = async (req, res) => {
     return void res.sendStatus(400);
   }
 
-  const config = req.app.get('config');
-
-  const query1 = convertQueryToES(q1, config);
-  const query2 = convertQueryToES(q2, config);
-
   let data1, data2;
 
   try {
-    data1 = await getWebsite(req.app, query1);
+    data1 = await getWebsite(req.app, q1);
   } catch (ex) {
-    console.error('esclient.getWebsite.err:', ex.stack || ex);
+    console.error('store.getWebsite.err:', ex.stack || ex);
     return void res.sendStatus(400);
   }
 
   try {
-    data2 = await getWebsite(req.app, query2);
+    data2 = await getWebsite(req.app, q2);
   } catch (ex) {
-    console.error('esclient.getWebsite.err:', ex.stack || ex);
+    console.error('store.getWebsite.err:', ex.stack || ex);
     return void res.sendStatus(400);
   }
 
-  const hits1 = (data1.hits && data1.hits.hits || [data1]).map(hit => {
-    const src = hit._source;
-    src.id = hit._id;
-    return src;
-  });
+  const files1 = data1.files ? data1.files : [data1];
+  const files2 = data2.files ? data2.files : [data2];
 
-  const hits2 = (data2.hits && data2.hits.hits || [data2]).map(hit => {
-    const src = hit._source;
-    src.id = hit._id;
-    return src;
-  });
-
-  const q1Result = hits1[0];
-  const q2Result = hits2[0];
+  const [q1Result] = files1;
+  const [q2Result] = files2;
 
   if (format === 'svg') { // send SVG
     res.setHeader('Content-Type', 'image/svg+xml');

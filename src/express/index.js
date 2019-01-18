@@ -1,15 +1,15 @@
 const express = require('express');
 const path = require('path');
-const getESClient = require('../elasticsearch/client');
-const getAMQPClient = require('../amqp/client');
+const Storage = require('../store');
+const Queue = require('../queue');
 
 module.exports = config => {
 
   const app = express();
 
   app.set('config', config);
-  app.set('esclient', getESClient(config));
-  app.set('amqp', getAMQPClient(config));
+  app.set('store', new Storage(config));
+  app.set('queue', new Queue(config));
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'));
 

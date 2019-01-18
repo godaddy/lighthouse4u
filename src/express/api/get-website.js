@@ -1,4 +1,4 @@
-const getWebsite = require('../../elasticsearch/get-website');
+const getWebsite = require('../util/get-website');
 const convertDocToSVG = require('../../util/convert-doc-to-svg');
 
 const SVG_DEFAULT_WIDTH = 640;
@@ -13,23 +13,19 @@ module.exports = async (req, res) => {
   try {
     data = await getWebsite(req.app, req.query);
   } catch (ex) {
-    console.error('esclient.getWebsite.err:', ex.stack || ex);
+    console.error('store.getWebsite.err:', ex.stack || ex);
     return void res.sendStatus(400);
   }
 
-  const hits = (data.hits && data.hits.hits || [data]).map(hit => {
-    const src = hit._source;
-    src.id = hit._id;
-    return src;
-  });
+  const files = data.files ? data.files : [data];
 
   if (format === 'svg') { // send SVG
     res.setHeader('Content-Type', 'image/svg+xml');
     const svgOpts = {
       svgWidth: SVG_DEFAULT_WIDTH, svgHeight: SVG_DEFAULT_HEIGHT, scale
     };
-    res.render('pages/website-svg-full', convertDocToSVG(hits[0], svgOpts));
+    res.render('pages/website-svg-full', convertDocToSVG(files[0], svgOpts));
   } else { // else send JSON
-    res.send(hits);
+    res.send(files);
   }
 };

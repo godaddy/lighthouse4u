@@ -1,5 +1,4 @@
 const submitWebsite = require('../lighthouse/submit');
-const indexWebsite = require('../elasticsearch/index-website');
 const getSafeDocument = require('../util/get-safe-document');
 
 module.exports = async app => {
@@ -8,38 +7,22 @@ module.exports = async app => {
 
 async function main(app) {
   const config = app.get('config');
-  const amqp = app.get('amqp');
-  const esclient = app.get('esclient');
+  const store = app.get('store');
+  const queue = app.get('queue');
 
-  const conn = await amqp;
-  const channel = await conn.createChannel();
-  const queueName = config.amqp.queue.name;
-  const { idleDelayMs } = config.amqp;
-  await channel.assertQueue(queueName, config.amqp.queue.options);
-  channel.prefetch(config.lighthouse.concurrency);
-  getNextMessage({ app, config, amqp, esclient, channel, queueName, idleDelayMs });
+  const { idleDelayMs } = config.queue;
+  getNextMessage({ app, config, queue, store, idleDelayMs });
 }
 
 async function getNextMessage(options) {
-  const { queueName, idleDelayMs, channel, config } = options;
+  const { idleDelayMs, queue, config } = options;
   const { lighthouse } = config;
-  const msg = await channel.get(queueName, { noAck: false });
+
+  const msg = await queue.dequeue();
 
   if (!msg) return void setTimeout(getNextMessage.bind(null, options), idleDelayMs);
 
-  let data;
-  try {
-    data = JSON.parse(msg.content.toString());
-  } catch (ex) {
-    channel.ack(msg);
-    console.warn('RMQP.consume returned invalid message', msg, ex.stack);
-    return void getNextMessage(options);
-  }
-  if (!msg.content || !data) {
-    channel.ack(msg);
-    console.warn('RMQP.consume returned invalid message', msg);
-    return void getNextMessage(options);
-  }
+  const { data } = msg;
 
   options.attempts = Math.min(
     Math.max(data.attempts || lighthouse.attempts.default, lighthouse.attempts.range[0]),
@@ -60,7 +43,7 @@ async function getNextMessage(options) {
     const waitBeforeRequeue = Math.min(lighthouse.delay.maxRequeueDelayMs, delayTime - Date.now());
     setTimeout(() => {
       // queue the modified request
-      channel.sendToQueue(config.amqp.queue.name, Buffer.from(JSON.stringify(data)));
+      queue.enqueue(data);
 
       // drop the old msg
       channel.ack(msg);
@@ -72,22 +55,22 @@ async function getNextMessage(options) {
   getNextMessage(options);
 }
 
-async function processMessage({ app, config, channel, attempts }, msg, data) {
+async function processMessage({ app, config, queue, store, attempts }, msg, data) {
   try {
     const results = await submitWebsite(data.requestedUrl, config, data);
     data.state = 'processed';
     data = Object.assign(data, results);
     delete data.headers; // no longer needed
 
-    // save to ES
+    // update store and ACK msg from queue
     try {
-      await indexWebsite(app, data);
-      channel.ack(msg);
+      store.write(data);
+      queue.ack(msg);
     } catch (ex) {
-      console.error('failed to write to ES!', ex.stack || ex);
+      console.error('failed to write to store!', ex.stack || ex);
 
       // retry
-      channel.nack(msg);
+      queue.nack(msg);
     }
   } catch (ex) {
     console.error(`lighthouse failed! attempt ${data.attempt} of ${attempts}`, getSafeDocument(data), ex.stack || ex);
@@ -103,17 +86,17 @@ async function processMessage({ app, config, channel, attempts }, msg, data) {
       data.delayTime = Date.now() + Math.pow(2, data.attempt) * config.lighthouse.attempts.delayMsPerExponent;
     }
 
-    // save failure state to ES
+    // save failure state to store
     try {
-      await indexWebsite(app, data);
+      await store.write(data);
     } catch (ex2) {
-      console.error('failed to write to ES!', getSafeDocument(data), ex2.stack || ex2);
+      console.error('failed to write to store!', getSafeDocument(data), ex2.stack || ex2);
 
       // nothing more to do
     }
 
     if (data.state === 'error') { // we've given up
-      channel.ack(msg);
+      queue.ack(msg);
     }
   }
 }

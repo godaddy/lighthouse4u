@@ -32,7 +32,7 @@ const ALLOWED_KEYS = {
   i18n: false
 };
 
-module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
+module.exports = async (url, { lighthouse: baseConfig, amqp, launcher }, options) => {
   const config = Object.assign({}, baseConfig.config);
   const { hostOverride, group, secureHeaders, cipherVector, commands, cookies } = options;
 
@@ -72,7 +72,7 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
   const res = await fetch(url, { headers: config.settings.extraHeaders || {}});
   if (res.status >= 400) throw new Error(`requestedUrl '${url}' returned status ${res.status}`);
 
-  const validateHandlerPath = baseConfig.validate[group];
+  const validateHandlerPath = baseConfig.validate && baseConfig.validate[group];
   const validateHandler = validateHandlerPath && require(path.resolve(validateHandlerPath));
   validateHandler && validateHandler({ res });
 
@@ -89,7 +89,7 @@ module.exports = async (url, { lighthouse: baseConfig, amqp }, options) => {
 
   const results = [];
   for (let sample = 0; sample < samples; sample++) {
-    results[sample] = await getLighthouseResult(url, config, { auditMode, throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies });
+    results[sample] = await getLighthouseResult(url, config, { launcher, auditMode, throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies });
   }
 
   // take the top result
@@ -192,7 +192,7 @@ function getCommandsFromCookies(cookies, { url }) {
   return commands;
 }
 
-async function getLighthouseResult(url, config, { auditMode, throttlingPreset, hostOverride, commands = [], cookies = [] }) {
+async function getLighthouseResult(url, config, { launcher, auditMode, throttlingPreset, hostOverride, commands = [], cookies = [] }) {
   const chromeOptions = { chromeFlags: config.chromeFlags };
   if (hostOverride) {
     const { host } = URL.parse(url);
@@ -202,7 +202,7 @@ async function getLighthouseResult(url, config, { auditMode, throttlingPreset, h
     ]);
   }
 
-  const chrome = await chromeLauncher.launch(chromeOptions);
+  const chrome = await (launcher || chromeLauncher.launch)(chromeOptions);
   chromeOptions.port = chrome.port;
   return new Promise(async (resolve, reject) => {
     // a workaround for what appears to a bug with lighthouse that prevents graceful failure

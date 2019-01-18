@@ -16,17 +16,16 @@ module.exports = {
     process.on('unhandledRejection', err => console.error(err.stack || err));
 
     const { getConfigs } = require('../config');
-    const configs = await getConfigs(argv);
-    const config = configs[0];
+    const [config] = await getConfigs(argv);
 
     const startListener = require('../http/start');
-    const processQueue = require('../amqp/process-queue');
     const getApp = require('../express');
 
     const app = getApp(config);
     startListener(app);
-    if (config.amqp.queue.enabled === true) {
+    if (config.queue.enabled === true) {
       // only process queue if enabled
+      const processQueue = require('../queue/process');
       processQueue(app);
     }
   }

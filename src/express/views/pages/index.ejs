@@ -34,9 +34,9 @@
         <div class="card-body">
           <form>
             <div class="form-group">
-              <label>Query by</label> <label id="queryByLabel" class="form-text text-muted" style="display:inline; text-decoration: underline">Domain Name</label>
-              <input id="queryByValue" class="form-control" placeholder="www.somedomain.name OR abc123 OR http://www.somedomain.com/some/path" onkeyup="onQueryByValueChange()">
-              <small class="form-text text-muted">Type will be auto-detected as domain name, document ID, group, or requested URL.</small>
+              <label>Query</label>
+              <input id="queryByValue" class="form-control" placeholder="www.somedomain.name OR id:myDocumentId OR http://www.somedomain.com/some/path" onkeyup="onQueryByValueChange()">
+              <small class="form-text text-muted">Query by document (via `id:{myDocumentId}`), or URL, or partial URL.</small>
             </div>
             <div class="form-group">
               <label for="queryTop">Max Results</label>

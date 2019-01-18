@@ -1,0 +1,29 @@
+{
+  "name": "lighthouse4u-s3",
+  "version": "1.0.0-alpha2",
+  "description": "AWS S3 Storage client for Lighthouse4u",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godaddy/lighthouse4u.git"
+  },
+  "files": [
+    "index.js",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md",
+    "package.json"
+  ],
+  "author": "GoDaddy.com Operating Company LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/godaddy/lighthouse4u/issues"
+  },
+  "homepage": "https://github.com/godaddy/lighthouse4u#readme",
+  "dependencies": {
+    "aws-sdk": "^2.384.0"
+  }
+}

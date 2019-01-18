@@ -1,6 +1,5 @@
 const lighthouseOptions = document.getElementById('lighthouseOptions');
 const websiteInfo = document.getElementById('websiteInfo');
-const queryByLabel = document.getElementById('queryByLabel');
 const queryByValue = document.getElementById('queryByValue');
 const submitWebsite = document.getElementById('submitWebsite');
 const getWebsite = document.getElementById('getWebsite');
@@ -15,7 +14,6 @@ let batchFileText;
 const batchFileReader = new FileReader();
 batchFileReader.onload = e => {
   batchFileText = e.target.result;
-  console.log(batchFileText);
 };
 batchFile.addEventListener('change', evt => {
   batchFileReader.readAsText(evt.target.files[0]);
@@ -32,15 +30,17 @@ function onSubmitWebsite() {
   }
   const lhOptionsJSON = JSON.stringify(lhOptions);
   submitWebsite.disabled = getWebsite.disabled = true;
-  fetch('/api/website', {
+  fetch('api/website', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
     },
     body: lhOptionsJSON
   })
-    .then(res => res.json())
+    .then(res => res.status !== 200 ? new Error(`Server returned ${res.status}`) : res.json())
     .then(body => {
+      if (body instanceof Error) throw body;
+
       submitWebsite.disabled = getWebsite.disabled = null;
 
       const arr = Array.isArray(body) ? body : [body];
@@ -65,38 +65,26 @@ const QUERY_TYPE_LABELS = {
   documentId: 'Document ID'
 };
 
-function getQueryType() {
-  const val = queryByValue.value;
-  if (/^http(s?):\/\//i.test(val)) return 'requestedUrl';
-  else if (/\.(.*)\./.test(val)) return 'domainName';
-  else if (/\./.test(val)) return 'rootDomain';
-  else if (val.length === 20) return 'documentId'; // slightly hacky but good enough for UI
-  return 'group';
-}
-
-function onQueryByValueChange() {
-  const label = QUERY_TYPE_LABELS[getQueryType()] || 'unknown';
-  queryByLabel.innerHTML = label;
-}
-
 function getQueryURL() {
-  const queryKey = getQueryType();
-  return `/api/website?top=${queryTop.value}&${queryKey}=${encodeURIComponent(queryByValue.value)}`;
+  return `api/website?top=${queryTop.value}&q=${encodeURIComponent(queryByValue.value)}`;
 }
 
 function updateSVG(queryURL) {
   if (!queryURL) queryURL = getQueryURL();
 
-  websiteSVG.src = `${queryURL}&format=svg&scale=1`;
-  svgURL.href = svgURL.innerText = websiteSVG.src;
+  const svgUrl = `${queryURL}&format=svg&scale=1`;
+  websiteSVG.src = `${svgUrl}&cache=${Date.now()}`; // only use cache busting on IMG itself, not the link to copy
+  svgURL.href = svgURL.innerText = svgUrl;
 }
 
 function onGetWebsite() {
   submitWebsite.disabled = getWebsite.disabled = true;
   const queryURL = getQueryURL();
   fetch(queryURL)
-    .then(res => res.json())
+    .then(res => res.status !== 200 ? new Error(`Server returned ${res.status}`) : res.json())
     .then(body => {
+      if (body instanceof Error) throw body;
+      
       submitWebsite.disabled = getWebsite.disabled = null;
 
       websiteInfo.innerText = JSON.stringify(body, null, 2);
@@ -124,6 +112,5 @@ const query = document.location.search.substr(1).split('&')
 ;
 if (query.query) {
   queryByValue.value = query.query;
-  onQueryByValueChange();
   onGetWebsite();
 }

@@ -6,8 +6,18 @@
       }
     }
   },
-  amqp: {
-    secretKey: 'superSecret!' // for testing only -- this belongs in secure configuration
+  store: {
+    module: './packages/lighthouse4u-fs',
+    options: {
+      dir: './test/fs-store'
+    }
+  },
+  queue: {
+    module: './packages/lighthouse4u-amqp',
+    options: {
+      connect: { options: { url: 'amqp://user:password@host:5672/lh4u' } }, // see COPY.json5
+      queue: { name: 'lh4u' }
+    }
   },
   lighthouse: {
     attempts: {
@@ -15,11 +25,6 @@
     },
     samples: {
       default: 1
-    }
-  },
-  elasticsearch: {
-    options: {
-      host: 'http://localhost:9200'
     }
   }
 }

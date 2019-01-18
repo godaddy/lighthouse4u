@@ -2,8 +2,8 @@
 
 [![travis-ci](https://travis-ci.org/godaddy/lighthouse4u.svg?branch=master)](https://travis-ci.org/godaddy/lighthouse4u)
 
-LH4U provides [Google Lighthouse](https://github.com/GoogleChrome/lighthouse) as a service, surfaced by both a friendly UI+API, and backed by
-[Elastic Search](https://www.elastic.co/products/elasticsearch) for all your query and [visualization needs](https://www.elastic.co/products/kibana).
+LH4U provides [Google Lighthouse](https://github.com/GoogleChrome/lighthouse) as a service, surfaced by both a friendly UI+API, and backed by various
+[storage](#storage-clients) and [queue](#queue-clients) clients to support a wide range of architectures.
 
 
 ![UI](./docs/example.gif)
@@ -20,23 +20,55 @@ lh4u --config local --config-dir ./app/config --config-base defaults --secure-co
 Or locally to this repo via `npm start` (you'll need to create `test/config/local.json5` by copying `test/config/COPY.json5`).
 
 
+## Architectures
+
+With the release of v1, we've decoupled compute and storage into multiple tiers to permit a diverse set of
+architectures. Not only are custom [storage](#storage-clients) and [queue](#queue-clients) clients
+supported, but compute can even be run serverless.
+
+### Queue Architecture
+
+This most closely resembles that of `v0.7`, but without the restrictions of being locked into Elasticsearch and RabbitMQ.
+
+```
+{  
+  reader: {
+    module: 'lighthouse4u-elasticsearch', options: { /* ... */ }
+  },
+  writer: {
+    module: 'lighthouse4u-elasticsearch', options: { /* ... */ }
+  },
+  queue: { // rabbit
+    module: 'lighthouse4u-amqp', options: { /* ... */ }
+  }
+}
+```
+
+**Note:** The `lighthouse4u-elasticsearch` storage client is not yet available. Happy to take contributions!
+
+
+### Serverless Architecture
+
+Same as above, you're not tied to Elasticsearch. Use whatever
+[storage](#storage-clients) and [queue](#queue-clients) client fits your needs. Due to the nature
+of AWS Lambda, your Lighthouse "runner" (triggered via SQS) is separate from the Lighthouse4u UI+API.
+
+Serverless example via [AWS Lambda](https://github.com/godaddy/lighthouse4u-lambda)
+
+
+
 ## Configuration Options
 
 | Option | Type | Default | Desc |
 | --- | --- | --- | --- |
-| elasticsearch | | | All options connected with Elasticsearch usage |
-| ->.options | `ESOptions` | [See Defaults](./src/config/default-config.js#L3) | [ES driver options](https://www.npmjs.com/package/elasticsearch) |
-| ->.indexName | `string` | `lh4u` | Index name in ES |
-| ->.indexType | `string` | `lh4u` | Index type in ES |
-| ->.index | `ESIndexOptions` | [See Defaults](./src/config/default-config.js#L12) | Options supplied to driver upon creation of ES index |
-| amqp | | | [AMQP Options](https://www.npmjs.com/package/amqplib) to connect to RabbitMQ or any other AMQP-compatible interface |
-| ->.url | `string` | `amqp://guest:guest@ localhost:5672/lh4u` | Connection string following the typical `{username}:{password}@{host}:{port}/{path}` format |
+| store|reader|writer | | | All options connected with storage. Reads will goto `reader` if provided, otherwise default to `store`. Writes will goto `writer` if provided, otherwise default to `store`. |
+| ->.module | `string` | **required** | Path of client module to import. See [storage clients](#storage-clients) |
+| ->.options | `object` | | Collection of options supplied to storage client |
+| queue | | | Queue configuration |
+| ->.module | `string` | **required** | Path of client module to import. See [queue clients](#queue-clients) |
 | ->.idleDelayMs | `number` | `1000` | Time (in MS) between queue checks when queue is empty |
-| ->.secretKey | `string` | optional | Required only if encrypting/decrypting `secureHeaders`. Should be stored in [secure configuration](#secure-configuration) |
-| ->.queue | `AmqpOptions` | | Queue options |
-| ->.queue.enabled | `boolean` | `true` | To enable pulling/processing of queue |
-| ->.queue.name | `string` | `lh4u` | Name of queue |
-| ->.queue.options | | [See Defaults](./src/config/default-config.js#L40) | [Queue creation options](http://www.squaremobius.net/amqp.node/channel_api.html#channel_assertQueue) |
+| ->.enabled | `boolean` | `true` | Consuming queue may be disabled |
+| ->.options | `object` | | Collection of options supplied to queue client |
 | http | | | HTTP(S) Server options |
 | ->.bindings | `Hash<HttpBinding>` | | An object of named bindings |
 | ->.bindings.{name} | `HttpBinding` | | With `{name}` being the name of the binding -- can be anything, ex: `myMagicBinding`. See value to `false` if you want to disable this binding. |
@@ -90,12 +122,8 @@ Fetch zero or more website results matching the criteria.
 | --- | --- | --- | --- |
 | format | `string` | `json` | Format of results, be it `json` or `svg` |
 | scale | `number` | `1` | Scale of `svg` |
-| documentId | `string` | optional | Query by document ID |
-| requestedUrl | `string` | optional | Query by requested URL |
-| finalUrl | `string` | optional | Query by final URL (after redirects) |
-| domainName | `string` | optional | Query by full domain |
-| rootDomain | `string` | optional | Query by root domain |
-| group | `string` | optional | Query by group ID |
+| q | `string` | optional | Query by URL or document ID |
+| top | `number` | `1` | Maximum records to return. Only applicable for `json` format |
 
 
 ### API - `GET /api/website/compare`
@@ -108,8 +136,8 @@ Similar to the single website GET, but instead compares results from `q1` with `
 | --- | --- | --- | --- |
 | format | `string` | `json` | Format of results, be it `json` or `svg` |
 | scale | `number` | `1` | Scale of `svg` |
-| q1 | `string` | **required** | Smart query will auto-detect if `documentId`, `requestedUrl`, `domainName`, or `rootDomain` |
-| q2 | `string` | **required** | Smart query will auto-detect if `documentId`, `requestedUrl`, `domainName`, or `rootDomain` |
+| q1 | `string` | **required** | First query by URL or document ID |
+| q2 | `string` | **required** | Second query by URL or document ID |
 
 ### API - `POST /api/website`
 
@@ -144,6 +172,22 @@ Submit to process website with Google Lighthouse.
 ### Command
 
 
+## Storage Clients
+
+* [AWS S3](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-s3) - Store and basic query
+  support via S3 buckets.
+* [File System](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-fs) - Not recommended
+  for production usage. Good for local testing.
+
+
+## Queue Clients
+
+* [AWS SQS](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-sqs) - Support for
+  Simple Queue Service.
+* [File System](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-amqp) - Support for
+  RabbitMQ and other AMQP compatible queues.
+
+
 ## Secure Configuration
 
 Optionally you may run LH4U with the `--secure-config {secureConfigPath}` and `--secure-file {securePrivateFile}` powered by [Config Shield](https://github.com/godaddy/node-config-shield).
@@ -152,9 +196,9 @@ Optionally you may run LH4U with the `--secure-config {secureConfigPath}` and `-
 npm i -g config-shield
 cshield ./app/config/secure some-private.key
 > help
-> set amqp { url: 'amqp://lh4u_user:someSuperSecretPassword@rmq.on-my-domain.com:5672/lh4u' }
-> get amqp
-: { "url": "amqp://lh4u_user:someSuperSecretPassword@rmq.on-my-domain.com:5672/lh4u" }
+> set queue { options: { url: 'amqp://lh4u_user:someSuperSecretPassword@rmq.on-my-domain.com:5672/lh4u' } }
+> get queue
+: { "options": { "url": "amqp://lh4u_user:someSuperSecretPassword@rmq.on-my-domain.com:5672/lh4u" } }
 > save
 > exit
 ```

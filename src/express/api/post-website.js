@@ -1,8 +1,6 @@
-const indexWebsite = require('../../elasticsearch/index-website');
-const submitWebsite = require('../../amqp/submit-website');
 const { getDomain, getSubdomain } = require('tldjs');
 const encrypt = require('../../util/encrypt');
-const getWebsite = require('../../elasticsearch/get-website');
+const getWebsite = require('../util/get-website');
 const crypto = require('crypto');
 const papa = require('papaparse');
 
@@ -63,8 +61,10 @@ module.exports = async (req, res) => {
   }
 
   const config = req.app.get('config');
-  const { lighthouse, amqp } = config;
-  const { secretKey } = amqp;
+  const store = req.app.get('store');
+  const queue = req.app.get('queue');
+  const { lighthouse } = config;
+  const { secretKey } = config.queue;
 
   let secureHeadersEncrypted, cipherVector;
   if (secureHeaders) {
@@ -144,17 +144,20 @@ module.exports = async (req, res) => {
     });
 
     const documentPromises = documents.map(async doc => {
-      const { _id } = await indexWebsite(req.app, doc);
-      doc.id = _id;
+      const { id } = await store.write(doc);
+
+      doc.id = id;
 
       // do not queue until the document has been indexed
-      return submitWebsite(req.app, doc);
+      await queue.enqueue(doc);
+
+      return doc;
     });
 
-    await Promise.all(documentPromises);
+    const storedDocs = await Promise.all(documentPromises);
 
     if (wait) {
-      const processedDocs = await waitForProcessedDocs(req.app, documents, wait);
+      const processedDocs = await waitForProcessedDocs(req.app, storedDocs, wait);
       if (processedDocs) {
         documents = processedDocs;
       } else {
@@ -163,7 +166,7 @@ module.exports = async (req, res) => {
       }
     }
 
-    res.send(batch ? documents : documents[0]); // forward document(s) back to caller
+    res.send(batch ? storedDocs : storedDocs[0]); // forward document(s) back to caller
   } catch (ex) {
     console.error('indexWebsite.error:', ex.stack || ex);
     res.sendStatus(ex.status || 500);
@@ -178,7 +181,7 @@ async function waitForProcessedDocs(app, documents, timeout) {
     documents = await Promise.all(documents.map(doc => {
       if (doc.state === 'processed' || doc.state === 'error') return doc; // nothing more to do
 
-      return getWebsite(app, { documentId: doc.id }).then(doc => { doc._source.id = doc._id; return doc._source; });
+      return getWebsite(app, { q: doc.id });
     }));
 
     if (!documents.find(doc => (doc.state !== 'processed' && doc.state !== 'error'))) {

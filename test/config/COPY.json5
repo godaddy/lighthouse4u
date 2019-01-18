@@ -1,4 +1,4 @@
 {
-  amqp: { url: 'amqp://user:password@host:5672/lh4u' },
-  elasticsearch: { options: { host: 'http://localhost:9200' } }
+  // COPY THIS FILE to local.json5 and apply your local-only changes
+  queue: { options: { connect: { options: { url: 'amqp://user:password@host:5672/lh4u' } } } }
 }

@@ -2,7 +2,7 @@ const yargs = require('yargs');
 const path = require('path');
 const pkg = require('../package.json');
 
-yargs
+module.exports = yargs
   .commandDir(path.resolve(__dirname, '..', 'src', 'commands'))
   .option('before-start', {
     describe: 'Custom code to execute before starting HTTP Server',
@@ -47,7 +47,6 @@ yargs
       'load that holds the secret required to decrypt secure configuration files',
     type: 'string'
   })
-  .demandCommand()
   .help()
   .epilogue(`Lighthouse4u v${pkg.version}`)
   .argv
