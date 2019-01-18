@@ -1,6 +1,6 @@
 {
   "name": "lighthouse4u-s3",
-  "version": "1.0.0-alpha2",
+  "version": "1.0.0",
   "description": "AWS S3 Storage client for Lighthouse4u",
   "main": "index.js",
   "scripts": {

@@ -14,7 +14,6 @@ module.exports = class StoreS3 {
   }
 
   read(relPath) {
-    console.log('read:', relPath);
     const absPath = path.resolve(this.dir, relPath);
 
     return new Promise((resolve, reject) => {
@@ -35,7 +34,6 @@ module.exports = class StoreS3 {
 
     return new Promise(resolve => {
       fs.readdir(absPath, {}, (err, dirFiles) => {
-        console.log('fs.readdir:', absPath, err, dirFiles);        
         if (err) return void resolve({ files: [] });
 
         // !!! No support for recursion or resuming (resumeKey) -- overkill for this client since it's for dev only at present
@@ -52,7 +50,6 @@ module.exports = class StoreS3 {
 
   async find(url, opts) {
     const ls = await this.list(url, opts);
-console.log('find.ls:', ls);
     // read all docs
     await Promise.all(ls.files.map(async f => {
       const data = await this.read(f.id);
@@ -70,7 +67,6 @@ console.log('find.ls:', ls);
     const relPath = data.id ? data.id : urlToKey(data.requestedUrl);
     const absPath = path.resolve(this.dir, relPath);
     const json = JSON.stringify(data, null, 2);
-console.log('writing to:', absPath);
     return new Promise(async (resolve, reject) => {
       await ensureDir(path.dirname(absPath));
       fs.writeFile(absPath, json, 'utf8', err => {
@@ -87,7 +83,6 @@ console.log('writing to:', absPath);
 
 function urlToDir(url) {
   const urlInfo = URL.parse(url);
-  console.log('urlToDir:', url, urlInfo);
   return `${urlInfo.hostname}${urlToPath(urlInfo.pathname)}${urlInfo.pathname[urlInfo.pathname.length - 1] === '/' ? '' : `/`}`
 }
 
