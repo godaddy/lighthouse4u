@@ -1,6 +1,6 @@
 module.exports = {
   command: 'init',
-  desc: 'Initialize Elasticsearch & AMQP',
+  desc: 'Initialize Store & Queue',
   handler: async argv => {
     // ! deps must be moved into function callback to avoid loading deps prior to start events
     const { getConfigs } = require('../config');

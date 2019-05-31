@@ -32,7 +32,7 @@ const ALLOWED_KEYS = {
   i18n: false
 };
 
-module.exports = async (url, { lighthouse: baseConfig, amqp, launcher }, options) => {
+module.exports = async (url, { lighthouse: baseConfig, queue, launcher }, options) => {
   const config = Object.assign({}, baseConfig.config);
   const { hostOverride, group, secureHeaders, cipherVector, commands, cookies } = options;
 
@@ -46,23 +46,23 @@ module.exports = async (url, { lighthouse: baseConfig, amqp, launcher }, options
 
   let decryptedHeaders;
   if (secureHeaders) {
-    const { secretKey } = amqp;
-    if (!secretKey) throw new Error('`secureHeaders` is not allowed without `amqp.secretKey` being set');
+    const { secretKey } = queue;
+    if (!secretKey) throw new Error('`secureHeaders` is not allowed without `queue.secretKey` being set');
 
     decryptedHeaders = JSON.parse(decrypt(secureHeaders, secretKey, cipherVector));
     config.settings.extraHeaders = Object.assign(config.settings.extraHeaders, decryptedHeaders);
   }
   let decryptedCommands;
   if (commands) {
-    const { secretKey } = amqp;
-    if (!secretKey) throw new Error('`commands` is not allowed without `amqp.secretKey` being set');
+    const { secretKey } = queue;
+    if (!secretKey) throw new Error('`commands` is not allowed without `queue.secretKey` being set');
 
     decryptedCommands = JSON.parse(decrypt(commands, secretKey, cipherVector));
   }
   let decryptedCookies;
   if (cookies) {
-    const { secretKey } = amqp;
-    if (!secretKey) throw new Error('`cookies` is not allowed without `amqp.secretKey` being set');
+    const { secretKey } = queue;
+    if (!secretKey) throw new Error('`cookies` is not allowed without `queue.secretKey` being set');
 
     decryptedCookies = JSON.parse(decrypt(cookies, secretKey, cipherVector));
   }

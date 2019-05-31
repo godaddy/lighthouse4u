@@ -178,6 +178,8 @@ Submit to process website with Google Lighthouse.
   support via S3 buckets.
 * [File System](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-fs) - Not recommended
   for production usage. Good for local testing.
+* [Elasticsearch](https://github.com/godaddy/lighthouse4u/tree/master/packages/lighthouse4u-es) - Store and query
+  support via Elasticsearch.
 
 
 ## Queue Clients
