@@ -2,7 +2,7 @@ const http = require('http');
 const http2 = require('http2');
 
 module.exports = app => {
-  const { http: { bindings }} = app.get('config');
+  const { http: { bindings } } = app.get('config');
 
   const bindingKeys = Object.keys(bindings);
   if (!bindingKeys.length) throw new Error('No http.bindings detected!');

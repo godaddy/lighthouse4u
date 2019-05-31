@@ -84,7 +84,7 @@ function onGetWebsite() {
     .then(res => res.status !== 200 ? new Error(`Server returned ${res.status}`) : res.json())
     .then(body => {
       if (body instanceof Error) throw body;
-      
+
       submitWebsite.disabled = getWebsite.disabled = null;
 
       websiteInfo.innerText = JSON.stringify(body, null, 2);

@@ -17,7 +17,8 @@
     options: {
       connect: { options: { url: 'amqp://user:password@host:5672/lh4u' } }, // see COPY.json5
       queue: { name: 'lh4u' }
-    }
+    },
+    secretKey: 'superSecret!' // for testing only -- this belongs in secure
   },
   lighthouse: {
     attempts: {

@@ -16,7 +16,7 @@ module.exports = class Storage {
   }
 
   write(data, opts) {
-    if (/^id\:/.test(data.id)) data.id = data.id.substr(3); // remove prefix
+    if (/^id:/.test(data.id)) data.id = data.id.substr(3); // remove prefix
     return this.writerClient.write(getSafeDocument(data), opts)
       .then(doc => {
         doc.id = `id:${doc.id}`; // prefix id's before forwarding
@@ -26,9 +26,9 @@ module.exports = class Storage {
   }
 
   query(query, opts) {
-    const isReadQuery = /^id\:/.test(query);
+    const isReadQuery = /^id:/.test(query);
     if (isReadQuery) query = query.substr(3); // remove prefix before passing on to client
-    else if (!/^http(s)?\:/i.test(query)) query = `http://${query}`; // fully qualify URL, scheme is non-critical other than for parsing
+    else if (!/^http(s)?:/i.test(query)) query = `http://${query}`; // fully qualify URL, scheme is non-critical other than for parsing
 
     return this.readerClient[isReadQuery ? 'read' : 'find'](query, opts).then(data => {
       if (!data) return data;

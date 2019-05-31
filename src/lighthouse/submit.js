@@ -69,7 +69,7 @@ module.exports = async (url, { lighthouse: baseConfig, amqp, launcher }, options
 
   // throw if non-200
   // unfortunately not everyone supports HEAD, so we must perform a full GET...
-  const res = await fetch(url, { headers: config.settings.extraHeaders || {}});
+  const res = await fetch(url, { headers: config.settings.extraHeaders || {} });
   if (res.status >= 400) throw new Error(`requestedUrl '${url}' returned status ${res.status}`);
 
   const validateHandlerPath = baseConfig.validate && baseConfig.validate[group];
@@ -265,6 +265,11 @@ async function getLighthouseResult(url, config, { launcher, auditMode, throttlin
             delete auditV.details;
           }
         });
+      }
+
+      if (lhr.timing) {
+        // not yet supported
+        delete lhr.timing.entries;
       }
 
       // use results.lhr for the JS-consumeable output

@@ -3,7 +3,7 @@ const URL = require('url');
 
 const gInstances = {};
 
-module.exports = ({ app, config: { http: { auth, authRedirect }}}) => {
+module.exports = ({ app, config: { http: { auth, authRedirect } } }) => {
   const authKeys = Object.keys(auth).filter(key => !!auth[key]);
 
   return async (req, res, next) => {

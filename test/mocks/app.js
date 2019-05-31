@@ -4,8 +4,8 @@ module.exports = mocks => {
 
   const appGet = stub();
   appGet.withArgs('config').returns(mocks.config);
-  appGet.withArgs('amqp').returns(mocks.amqplib.connect());
-  appGet.withArgs('esclient').returns(mocks.esclient);
+  appGet.withArgs('store').returns(mocks.store);
+  appGet.withArgs('queue').returns(mocks.queue);
   return {
     get: appGet
   };

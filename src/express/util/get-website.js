@@ -1,10 +1,12 @@
+const getQuery = require('./get-query');
+
 module.exports = (app, query) => {
 
   const store = app.get('store');
 
-  if (typeof query === 'string') return store.query(query);
+  const { top = 1 } = query;
 
-  const { q, top = 1 } = query;
+  const q = getQuery(query);
 
   if (!q) throw new Error('query param `q` is required');
 

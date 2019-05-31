@@ -46,7 +46,7 @@ async function getNextMessage(options) {
       queue.enqueue(data);
 
       // drop the old msg
-      channel.ack(msg);
+      queue.ack(msg);
     }, waitBeforeRequeue).unref(); // no need to hold ref, msg will be requeued if connection broken
 
     // notice ^ is non-blocking, we'll continue to process other messages even during delay
