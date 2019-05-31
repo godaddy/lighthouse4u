@@ -2,7 +2,7 @@ module.exports = {
   config: { // See: https://github.com/GoogleChrome/lighthouse/blob/master/lighthouse-core/config/default-config.js
     extends: 'lighthouse:default', // extends default
     logLevel: 'warn',
-    chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox', '--disable-software-rasterizer'], // no-sandbox is required if running as root
+    chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox'], // no-sandbox is required if running as root
     settings: { // See: https://github.com/GoogleChrome/lighthouse/blob/master/lighthouse-core/config/constants.js#L30
       output: 'json',
       extraHeaders: {},
