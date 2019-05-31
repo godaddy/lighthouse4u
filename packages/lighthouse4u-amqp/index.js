@@ -13,7 +13,7 @@ module.exports = class QueueSQS {
   async connect(forceReconnect) {
     if (!forceReconnect && this.connection && this.channel) return this.channel;
 
-    this.connection = await amqplib.connect(this.options.connect.options);
+    this.connection = await amqplib.connect(this.options.connect.options.url || this.options.connect.options);
     this.channel = await this.connection.createChannel();
     await this.channel.assertQueue(this.options.queue.name, this.options.queue.options || {});
 

@@ -1,6 +1,6 @@
 {
   "name": "lighthouse4u-amqp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AWS AMQP Queue client for Lighthouse4u",
   "main": "index.js",
   "scripts": {
