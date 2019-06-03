@@ -154,12 +154,12 @@ module.exports = async (req, res) => {
       return doc;
     });
 
-    const storedDocs = await Promise.all(documentPromises);
+    let storedDocs = await Promise.all(documentPromises);
 
     if (wait) {
       const processedDocs = await waitForProcessedDocs(req.app, storedDocs, wait);
       if (processedDocs) {
-        documents = processedDocs;
+        storedDocs = processedDocs;
       } else {
         // if timeout, respond with partial to signal delta
         res.status(206); // partial
