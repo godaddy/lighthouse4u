@@ -88,6 +88,6 @@ function convertQueryToES(val) {
   if (/\//.test(protoLess)) return `requestedUrl:"${val}"`;
   else if (/\.(.*)\./.test(val)) return `domainName:"${protoLess}"`;
   else if (/\./.test(val)) return `rootDomain:"${protoLess}"`;
-  else if (protoLess.length === 20) return `id:"${protoLess}"`; // backward compatibility hack
+  else if (/id:/.test(protoLess)) return protoLess; // passthrough if ID
   return `group:"${protoLess}"`;
 }	
