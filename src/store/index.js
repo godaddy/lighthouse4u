@@ -27,9 +27,9 @@ module.exports = class Storage {
 
   query(query, opts) {
     const isReadQuery = /^id:/.test(query);
+    const isGroup = !/\./.test(query);
     if (isReadQuery) query = query.substr(3); // remove prefix before passing on to client
-    else if (!/^http(s)?:/i.test(query)) query = `http://${query}`; // fully qualify URL, scheme is non-critical other than for parsing
-
+    else if (!isGroup && !/^http(s)?:/i.test(query)) query = `http://${query}`; // fully qualify URL, scheme is non-critical other than for parsing
     return this.readerClient[isReadQuery ? 'read' : 'find'](query, opts).then(data => {
       if (!data) return data;
 
