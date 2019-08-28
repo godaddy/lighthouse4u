@@ -85,7 +85,7 @@ module.exports = async (url, { lighthouse: baseConfig, queue, launcher }, option
   }
 
   const auditMode = options.auditMode || baseConfig.auditMode;
-  const report = options.report !== undefined ? options.report : baseConfig.report;
+  const report = typeof options.report === 'boolean' ? options.report : baseConfig.report;
   const samples = Math.min(Math.max(options.samples || baseConfig.samples.default, baseConfig.samples.range[0]), baseConfig.samples.range[1]);
 
   const results = [];

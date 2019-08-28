@@ -52,7 +52,7 @@ function onSubmitWebsite() {
       websiteInfo.innerText = JSON.stringify(arr, null, 2);
 
       updateCards(arr);
-      window.scrollTo(0,document.body.scrollHeight);
+      window.scrollTo(0, document.body.scrollHeight);
     })
     .catch(err => {
       console.error('Oops!', err.stack || err);
@@ -123,13 +123,13 @@ function onGetWebsite() {
       websiteInfo.innerText = JSON.stringify(prettifyWebsites(body), null, 2);
 
       updateCards(body);
-      window.scrollTo(0,document.body.scrollHeight);
+      window.scrollTo(0, document.body.scrollHeight);
     })
     .catch(err => {
       console.error('Oops!', err.stack || err);
       websiteInfo.innerText = `Oops! ${(err.stack && err.stack.message) || err}`;
       submitWebsite.disabled = getWebsite.disabled = null;
-      window.scrollTo(0,document.body.scrollHeight);
+      window.scrollTo(0, document.body.scrollHeight);
     })
   ;
 }
@@ -157,5 +157,5 @@ function prettifyWebsites(o) {
       state[k] = v;
     }
     return state;
-  }, {}))
+  }, {}));
 }
