@@ -97,6 +97,7 @@ Serverless example via [AWS Lambda](https://github.com/godaddy/lighthouse4u-lamb
 | ->.validate | `hash<string>` | | Zero or more validators |
 | ->.validate.{groupName} | `string` | | Path of validation module used to determine if the response is coming from the intended server. Useful in cases where you only want to measure results coming from an intended infrastructure |
 | ->.concurrency | `number` | `1` | Number of concurrently processed tasks permitted |
+| ->.report | `bool` | `true` | Save the full report, viewable in LH viewer |
 | ->.samples | | | After N lighthouse samples are taken, only the best result is recorded |
 | ->.samples.default | `number` | `3` | Default number of lighthouse tests performed  |
 | ->.samples.range | `tuple<min,max>` | `[1, 5]` | Minimum and maximum samples taken before returning result |
@@ -120,7 +121,7 @@ Fetch zero or more website results matching the criteria.
 
 | Option | Type | Default | Desc |
 | --- | --- | --- | --- |
-| format | `string` | `json` | Format of results, be it `json` or `svg` |
+| format | `string` | `json` | Format of results, be it `json`, `svg`, `reportHtml`, or `reportJson` |
 | scale | `number` | `1` | Scale of `svg` |
 | q | `string` | optional | Query by URL or document ID |
 | top | `number` | `1` | Maximum records to return. Only applicable for `json` format |
@@ -156,6 +157,7 @@ Submit to process website with Google Lighthouse.
 | hostOverride | `string` | optional | Map host of request to an explicit IP. [Not yet supported by Chrome in Headless mode](https://bugs.chromium.org/p/chromium/issues/detail?id=798793) |
 | delay | `number` | (See `options.lighthouse.delay`) | Delay (in milliseconds) before test will be performed. Useful if the intended service or domain is not expected to be available for some time |
 | group | `string` | `unknown` | Group to categorize result to. Useful when searching/filtering on different groups of results |
+| report | `bool` | `true` | If the full report should be stored, allowing for viewing in LH Viewer |
 | auditMode | `false|'simple'|'details'|'all'` | `'simple'` | How much of the [audits](https://github.com/GoogleChrome/lighthouse/blob/master/docs/understanding-results.md#properties) data to persist to storage |
 | cookies | `array<{name=string|Cookie}>` | optional | Auto-translates cookies to set to the required `commands` |
 | cookies[idx].value | `string` | **required** | Value to set for cookie |

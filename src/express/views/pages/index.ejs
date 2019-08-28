@@ -14,9 +14,10 @@
           <textarea id="lighthouseOptions" class="form-control" rows="6">
 {
   "url": "https://www.google.com/",
-  "throttling": "mobile3G",
   "group": "web",
   "wait": 60000,
+  "samples": 1,
+  "report": true,
   "headers": {}
 }</textarea><br />
 
@@ -36,7 +37,7 @@
           <form>
             <div class="form-group">
               <label>Query</label>
-              <input id="queryByValue" class="form-control" placeholder="www.somedomain.name OR id:myDocumentId OR http://www.somedomain.com/some/path" onkeyup="onQueryByValueChange()">
+              <input id="queryByValue" class="form-control" placeholder="www.somedomain.name OR id:myDocumentId OR http://www.somedomain.com/some/path">
               <small class="form-text text-muted">Query by document (via `id:{myDocumentId}`), or URL, or partial URL.</small>
             </div>
             <div class="form-group">
@@ -49,11 +50,12 @@
           <button id="getWebsite" value="get" onclick="onGetWebsite()" type="button" class="card-link">Get Website</button>
         </div>
         <div class="card-footer">
-          <pre style="max-height:80%"><code id="websiteInfo"></code></pre>
+          <pre style="max-height:400px"><code id="websiteInfo"></code></pre>
         </div>
         <div class="card-footer">
-          <a id="svgURL"></a>
+          <a id="svgURL" target="_blank">SVG</a> <a id="jsonURL" target="_blank">JSON</a> <a id="reportURL" target="_blank">Lighthouse Report</a> <a id="reportJSONURL" target="_blank">Lighthouse JSON</a><br />
           <img id="websiteSVG" />
+          <iframe id="websiteIFrame" style="width:100%; height:280px; display:none; border:none; overflow:hidden;" scrolling="no"></iframe>
         </div>
       </div>
       

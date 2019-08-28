@@ -1,6 +1,6 @@
 const getQuery = require('./get-query');
 
-module.exports = (app, query) => {
+module.exports = (app, query, { clean = false } = {}) => {
 
   const store = app.get('store');
 

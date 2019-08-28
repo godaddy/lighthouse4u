@@ -27,7 +27,7 @@ const ALLOWED_KEYS = {
   audits: true,
   configSettings: true,
   categories: true,
-  categoryGroups: false,
+  categoryGroups: true,
   timing: true,
   i18n: false
 };
@@ -85,11 +85,12 @@ module.exports = async (url, { lighthouse: baseConfig, queue, launcher }, option
   }
 
   const auditMode = options.auditMode || baseConfig.auditMode;
+  const report = options.report !== undefined ? options.report : baseConfig.report;
   const samples = Math.min(Math.max(options.samples || baseConfig.samples.default, baseConfig.samples.range[0]), baseConfig.samples.range[1]);
 
   const results = [];
   for (let sample = 0; sample < samples; sample++) {
-    results[sample] = await getLighthouseResult(url, config, { launcher, auditMode, throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies });
+    results[sample] = await getLighthouseResult(url, config, { report, launcher, auditMode, throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies });
   }
 
   // take the top result
@@ -192,7 +193,7 @@ function getCommandsFromCookies(cookies, { url }) {
   return commands;
 }
 
-async function getLighthouseResult(url, config, { launcher, auditMode, throttlingPreset, hostOverride, commands = [], cookies = [] }) {
+async function getLighthouseResult(url, config, { launcher, auditMode, throttlingPreset, hostOverride, report, commands = [], cookies = [] }) {
   const chromeOptions = { chromeFlags: config.chromeFlags };
   if (hostOverride) {
     const { host } = URL.parse(url);
@@ -239,6 +240,11 @@ async function getLighthouseResult(url, config, { launcher, auditMode, throttlin
       Object.keys(lhr).forEach(resultKey => {
         if (!ALLOWED_KEYS[resultKey]) lhr[resultKey] = null;
       });
+
+      if (report) {
+        // store FULL report (200-300KB)
+        lhr._report = results.report;
+      }
 
       const { categories } = lhr;
       Object.keys(categories).forEach(catKey => {

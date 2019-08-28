@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const papa = require('papaparse');
 
 module.exports = async (req, res) => {
-  const { batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
+  const { report, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
 
   let documentRequests;
 
@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
   const groups = (typeof req.groupsAllowed === 'string') ? [req.groupsAllowed] : req.groupsAllowed;
 
   try {
-    let documents = documentRequests.map(({ url, group }) => {
+    const documents = documentRequests.map(({ url, group }) => {
 
       if (req.groupsAllowed && (typeof req.groupsAllowed !== 'string' || req.groupsAllowed !== '*')) {
         // verify the requested group is allowed
@@ -130,6 +130,7 @@ module.exports = async (req, res) => {
         commands: commandsEncrypted,
         cookies: cookiesEncrypted,
         cipherVector,
+        report,
         group,
         auditMode,
         samples,
@@ -181,7 +182,7 @@ async function waitForProcessedDocs(app, documents, timeout) {
     documents = await Promise.all(documents.map(doc => {
       if (doc.state === 'processed' || doc.state === 'error') return doc; // nothing more to do
 
-      return getWebsite(app, { q: doc.id });
+      return getWebsite(app, { q: doc.id }).then(({ audits, i18n, _report, categoryGroups, ...others }) => ({ ...others, hasReport: !!_report }));
     }));
 
     if (!documents.find(doc => (doc.state !== 'processed' && doc.state !== 'error'))) {
