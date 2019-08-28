@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const papa = require('papaparse');
 
 module.exports = async (req, res) => {
-  const { report, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
+  const { report = true, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
 
   let documentRequests;
 
