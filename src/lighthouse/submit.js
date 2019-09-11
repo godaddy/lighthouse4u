@@ -210,7 +210,7 @@ async function getLighthouseResult(url, config, { launcher, auditMode, throttlin
     const timer = setTimeout(() => {
       chrome.kill(); // force cleanup
       reject(new Error('timeout!'));
-    }, 60000).unref();
+    }, 600000).unref();
 
     try {
       const connection = new ChromeProtocol(chromeOptions.port, chromeOptions.hostname);
