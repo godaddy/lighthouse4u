@@ -41,7 +41,7 @@
   "license": "MIT",
   "dependencies": {
     "basic-auth": "^2.0.1",
-    "chrome-launcher": "^0.13.0",
+    "chrome-launcher": "^0.13.1",
     "config-shield": "^0.2.0",
     "cross-fetch": "^3.0.4",
     "ejs": "^3.0.1",
