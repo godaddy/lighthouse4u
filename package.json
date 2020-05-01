@@ -14,7 +14,9 @@
     "report": "nyc report --reporter=lcov",
     "init": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults -- init",
     "start": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults --before-start ./test/local/before-start.js -- server",
-    "test": "npm run cover && npm run report"
+    "test": "npm run cover && npm run report",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "engines": {
     "node": ">=8.8"
@@ -51,7 +53,8 @@
     "lodash": "^4.17.15",
     "papaparse": "^5.2.0",
     "tldjs": "^2.3.1",
-    "yargs": "^13.3.2"
+    "yargs": "^13.3.2",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "amqplib": "^0.5.3",
@@ -66,5 +69,6 @@
     "proxyquire": "^2.1.0",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0"
-  }
+  },
+  "snyk": true
 }
