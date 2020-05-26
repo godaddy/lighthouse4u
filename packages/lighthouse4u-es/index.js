@@ -40,6 +40,7 @@ module.exports = class StoreES {
 
   list(query, { resumeKey, maxCount = 10, order = 'DESC' } = {}) {
     const q = convertQueryToES(query);
+console.log('es.list:', this.config.index, q);
     return this.client.search({	
       index: this.config.index.name,	
       type: this.config.index.type,	

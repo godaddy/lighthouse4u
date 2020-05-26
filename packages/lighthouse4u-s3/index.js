@@ -109,7 +109,7 @@ function urlToS3Dir(url) {
 function urlToS3Key(url) {
   // it's important that the key can be lexical (for byte order) and shrinking to permit returning newest results first
   // S3 doesn't permit returning descending order w/o a query layer
-  const decrementingKey = encodeSpecialCharacters(new Buffer(`${9999999999999 - Date.now()}`).toString('base64')); // ugly hack since we cannot use a human readable timestamp
+  const decrementingKey = encodeSpecialCharacters(Buffer.from(`${9999999999999 - Date.now()}`).toString('base64')); // ugly hack since we cannot use a human readable timestamp
   const urlInfo = URL.parse(url);
   return `${urlInfo.hostname}${encodeSpecialCharacters(urlInfo.pathname)}${urlInfo.pathname[urlInfo.pathname.length - 1] === '/' ? decrementingKey : `/${decrementingKey}`}.json`
 }

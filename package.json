@@ -1,6 +1,6 @@
 {
   "name": "lighthouse4u",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "LH4U provides Google Lighthouse as a service, surfaced by both a friendly UI+API, and backed by Elastic Search for all your query and visualization needs",
   "main": "./src/cli.js",
   "bin": {
@@ -12,8 +12,8 @@
     "cover": "nyc mocha test/",
     "pretest": "npm run eslint",
     "report": "nyc report --reporter=lcov",
-    "init": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults -- init",
-    "start": "./bin/lh4u --config local --config-dir ./test/config --config-base defaults --before-start ./test/local/before-start.js -- server",
+    "init": "./bin/lh4u init --config local --config-dir ./test/config --config-base defaults",
+    "start": "./bin/lh4u server --config local --config-dir ./test/config --config-base defaults --before-start ./test/local/before-start.js",
     "test": "npm run cover && npm run report"
   },
   "engines": {
@@ -41,30 +41,30 @@
   "license": "MIT",
   "dependencies": {
     "basic-auth": "^2.0.1",
-    "chrome-launcher": "^0.13.1",
+    "chrome-launcher": "^0.13.2",
     "config-shield": "^0.2.0",
     "cross-fetch": "^3.0.4",
-    "ejs": "^3.0.1",
+    "ejs": "^3.1.3",
     "express": "^4.17.1",
-    "json5": "^2.1.2",
-    "lighthouse": "^5.6.0",
+    "json5": "^2.1.3",
+    "lighthouse": "^6.0.0",
     "lodash": "^4.17.15",
     "papaparse": "^5.2.0",
     "tldjs": "^2.3.1",
-    "yargs": "^13.3.2"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "amqplib": "^0.5.3",
+    "amqplib": "^0.5.6",
     "chai": "^4.2.0",
-    "eslint": "^5.16.0",
-    "eslint-config-godaddy": "^3.0.0",
-    "eslint-plugin-json": "^1.4.0",
-    "eslint-plugin-mocha": "^5.3.0",
-    "fs-extra": "^8.0.1",
-    "mocha": "^6.1.4",
-    "nyc": "^14.1.1",
-    "proxyquire": "^2.1.0",
-    "sinon": "^7.3.2",
-    "sinon-chai": "^3.3.0"
+    "eslint": "^7.1.0",
+    "eslint-config-godaddy": "^4.0.0",
+    "eslint-plugin-json": "^2.1.1",
+    "eslint-plugin-mocha": "^7.0.0",
+    "fs-extra": "^9.0.0",
+    "mocha": "^7.2.0",
+    "nyc": "^15.0.1",
+    "proxyquire": "^2.1.3",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0"
   }
 }

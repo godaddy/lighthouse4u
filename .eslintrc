@@ -6,6 +6,7 @@
     "no-unused-vars": 0,
     "id-length": 0,
     "no-alert": 0,
-    "no-shadow": 0
+    "no-shadow": 0,
+    "no-async-promise-executor": 0
   }
 }

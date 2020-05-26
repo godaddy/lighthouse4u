@@ -14,7 +14,7 @@ Start server via CLI:
 
 ```
 npm i -g lighthouse4u
-lh4u --config local --config-dir ./app/config --config-base defaults --secure-config ./app/config/secure --secure-file some-private.key -- server
+lh4u server --config local --config-dir ./app/config --config-base defaults --secure-config ./app/config/secure --secure-file some-private.key
 ```
 
 Or locally to this repo via `npm start` (you'll need to create `test/config/local.json5` by copying `test/config/COPY.json5`).

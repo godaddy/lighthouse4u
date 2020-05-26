@@ -77,7 +77,7 @@ module.exports = class QueueSQS {
     try {
       const channel = await this.connect();
     
-      if (!channel.sendToQueue(this.options.queue.name, new Buffer(JSON.stringify(data)))) {
+      if (!channel.sendToQueue(this.options.queue.name, Buffer.from(JSON.stringify(data)))) {
         throw new Error('Failed to write to queue');
       }
     } catch (ex) {

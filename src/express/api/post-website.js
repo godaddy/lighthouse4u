@@ -72,7 +72,7 @@ module.exports = async (req, res) => {
       return void res.status(400).send('`secureHeaders` feature not enabled');
     }
 
-    cipherVector = new Buffer(crypto.randomBytes(8)).toString('hex');
+    cipherVector = Buffer.from(crypto.randomBytes(8)).toString('hex');
     secureHeadersEncrypted = encrypt(JSON.stringify(secureHeaders), secretKey, cipherVector);
   }
   let commandsEncrypted;
@@ -81,7 +81,7 @@ module.exports = async (req, res) => {
       return void res.status(400).send('`commands` feature not enabled');
     }
 
-    cipherVector = cipherVector || new Buffer(crypto.randomBytes(8)).toString('hex');
+    cipherVector = cipherVector || Buffer.from(crypto.randomBytes(8)).toString('hex');
     commandsEncrypted = encrypt(JSON.stringify(commands), secretKey, cipherVector);
   }
   let cookiesEncrypted;
@@ -90,7 +90,7 @@ module.exports = async (req, res) => {
       return void res.status(400).send('`cookies` feature not enabled');
     }
 
-    cipherVector = cipherVector || new Buffer(crypto.randomBytes(8)).toString('hex');
+    cipherVector = cipherVector || Buffer.from(crypto.randomBytes(8)).toString('hex');
     cookiesEncrypted = encrypt(JSON.stringify(cookies), secretKey, cipherVector);
   }
 

@@ -49,5 +49,6 @@ module.exports = yargs
   })
   .help()
   .epilogue(`Lighthouse4u v${pkg.version}`)
+  .demandCommand()
   .argv
 ;
