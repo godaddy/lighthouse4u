@@ -33,12 +33,13 @@ module.exports = config => {
 
   // mount `http.routes` if any provided
   Object.keys(config.http.routes).forEach(key => {
-    const routeOptions = config.http.routes[key];
-    const routePath = path.resolve(routeOptions.path || routeOptions);
-    const routeMethod = routeOptions.method || 'get';
-    const routeModule = require(routePath)(app, typeof routeOptions === 'string' ? {} : routeOptions);
-    const route = routeOptions.route || key;
-    app[routeMethod](route, routeModule);
+    const route = config.http.routes[key];
+    const routeOptions = typeof route === 'string' ? {} : (route.options || route);
+    const routePath = path.resolve(route.path || route);
+    const routeMethod = route.method || 'get';
+    const routeModule = require(routePath)(app, routeOptions);
+    const routeKey = route.route || key;
+    app[routeMethod](routeKey, routeModule);
   });
 
   app.use((err, req, res, next) => {
