@@ -1,11 +1,13 @@
 const { getDomain, getSubdomain } = require('tldjs');
 const encrypt = require('../../util/encrypt');
 const getWebsite = require('../util/get-website');
+const processQueue = require('../../queue/process');
+const { processMessage } = processQueue;
 const crypto = require('crypto');
 const papa = require('papaparse');
 
 module.exports = async (req, res) => {
-  const { report = true, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
+  const { report = true, queue: canQueue = true, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
 
   let documentRequests;
 
@@ -149,8 +151,12 @@ module.exports = async (req, res) => {
 
       doc.id = id;
 
-      // do not queue until the document has been indexed
-      await queue.enqueue(doc);
+      if (canQueue) {      // do not queue until the document has been indexed
+        await queue.enqueue(doc);  
+      } else {
+        // process inline
+        doc = await processMessage({ config, store }, null, doc);
+      }
 
       return doc;
     });

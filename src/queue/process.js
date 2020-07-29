@@ -24,13 +24,6 @@ async function getNextMessage(options) {
 
   const { data } = msg;
 
-  options.attempts = Math.min(
-    Math.max(data.attempts || lighthouse.attempts.default, lighthouse.attempts.range[0]),
-    lighthouse.attempts.range[1]
-  );
-
-  data.attempt = data.attempt || 1;
-
   let delayTime = data.delayTime;
   if (!delayTime || delayTime <= Date.now()) {
     await processMessage(options, msg, data);
@@ -55,7 +48,17 @@ async function getNextMessage(options) {
   getNextMessage(options);
 }
 
-async function processMessage({ app, config, queue, store, attempts }, msg, data) {
+async function processMessage(options, msg, data) {
+  const { config, queue, store } = options;
+  const { lighthouse } = config;
+
+  const attempts = Math.min(
+    Math.max(data.attempts || lighthouse.attempts.default, lighthouse.attempts.range[0]),
+    lighthouse.attempts.range[1]
+  );
+
+  data.attempt = data.attempt || 1;
+
   try {
     const results = await submitWebsite(data.requestedUrl, config, data);
     data.state = 'processed';
@@ -64,13 +67,13 @@ async function processMessage({ app, config, queue, store, attempts }, msg, data
 
     // update store and ACK msg from queue
     try {
-      store.write(data);
-      queue.ack(msg);
+      data = await store.write(data);
+      queue && queue.ack(msg);
     } catch (ex) {
       console.error('failed to write to store!', ex.stack || ex);
 
       // retry
-      queue.nack(msg);
+      queue && queue.nack(msg);
     }
   } catch (ex) {
     console.error(`lighthouse failed! attempt ${data.attempt} of ${attempts}`, getSafeDocument(data), ex.stack || ex);
@@ -88,7 +91,7 @@ async function processMessage({ app, config, queue, store, attempts }, msg, data
 
     // save failure state to store
     try {
-      await store.write(data);
+      data = await store.write(data);
     } catch (ex2) {
       console.error('failed to write to store!', getSafeDocument(data), ex2.stack || ex2);
 
@@ -96,7 +99,11 @@ async function processMessage({ app, config, queue, store, attempts }, msg, data
     }
 
     if (data.state === 'error') { // we've given up
-      queue.ack(msg);
+      queue && queue.ack(msg);
     }
   }
+
+  return data;
 }
+
+module.exports.processMessage = processMessage;
