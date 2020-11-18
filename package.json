@@ -51,7 +51,7 @@
     "lodash": "^4.17.19",
     "papaparse": "^5.2.0",
     "tldjs": "^2.3.1",
-    "yargs": "^15.4.1"
+    "yargs": "^16.0.0"
   },
   "devDependencies": {
     "amqplib": "^0.5.6",
