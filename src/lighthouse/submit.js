@@ -29,7 +29,8 @@ const ALLOWED_KEYS = {
   categories: true,
   categoryGroups: true,
   timing: true,
-  i18n: false
+  i18n: false,
+  websiteMeta: true
 };
 
 module.exports = async (url, { lighthouse: baseConfig, queue, launcher }, options) => {
@@ -276,6 +277,10 @@ async function getLighthouseResult(url, config, { launcher, auditMode, throttlin
       if (lhr.timing) {
         // not yet supported
         delete lhr.timing.entries;
+      }
+
+      if (config.settings.websiteMeta) {
+        lhr.websiteMeta = config.settings.websiteMeta;
       }
 
       // use results.lhr for the JS-consumeable output
