@@ -34,7 +34,7 @@ const ALLOWED_KEYS = {
 
 module.exports = async (url, { lighthouse: baseConfig, queue, launcher }, options) => {
   const config = Object.assign({}, baseConfig.config);
-  const { hostOverride, group, secureHeaders, cipherVector, commands, cookies, websiteMeta } = options;
+  const { hostOverride, group, secureHeaders, cipherVector, commands, cookies, meta } = options;
 
   // only pull over whitelisted options
   Object.keys(options).forEach(optionKey => {
@@ -90,7 +90,7 @@ module.exports = async (url, { lighthouse: baseConfig, queue, launcher }, option
 
   const results = [];
   for (let sample = 0; sample < samples; sample++) {
-    results[sample] = await getLighthouseResult(url, config, { report, launcher, auditMode, throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies, websiteMeta });
+    results[sample] = await getLighthouseResult(url, config, { report, launcher, auditMode, throttlingPreset, hostOverride, commands: decryptedCommands, cookies: decryptedCookies, meta });
   }
 
   // take the top result
@@ -192,7 +192,7 @@ function getCommandsFromCookies(cookies, { url }) {
   return commands;
 }
 
-async function getLighthouseResult(url, config, { launcher, auditMode, throttlingPreset, hostOverride, report, commands = [], cookies = [], websiteMeta}) {
+async function getLighthouseResult(url, config, { launcher, auditMode, throttlingPreset, hostOverride, report, commands = [], cookies = [], meta }) {
   const chromeOptions = { chromeFlags: config.chromeFlags };
   if (hostOverride) {
     const { host } = URL.parse(url);
@@ -277,8 +277,8 @@ async function getLighthouseResult(url, config, { launcher, auditMode, throttlin
         delete lhr.timing.entries;
       }
 
-      if (websiteMeta) {
-        lhr.websiteMeta = websiteMeta;
+      if (meta) {
+        lhr.meta = meta;
       }
 
       // use results.lhr for the JS-consumeable output

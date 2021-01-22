@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const papa = require('papaparse');
 
 module.exports = async (req, res) => {
-  const { report = true, queue: canQueue = true, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown', websiteMeta } = req.body;
+  const { report = true, queue: canQueue = true, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown', meta } = req.body;
 
   let documentRequests;
 
@@ -142,7 +142,7 @@ module.exports = async (req, res) => {
         delayTime,
         state: 'requested',
         createDate: Date.now(),
-        websiteMeta
+        meta
       };
 
     });
@@ -153,7 +153,7 @@ module.exports = async (req, res) => {
       doc.id = id;
 
       if (canQueue) {      // do not queue until the document has been indexed
-        await queue.enqueue(doc);  
+        await queue.enqueue(doc);
       } else {
         // process inline
         doc = await processMessage({ config, store }, null, doc);
