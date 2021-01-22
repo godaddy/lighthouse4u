@@ -153,7 +153,7 @@ function prettifyWebsites(o) {
   return o.map(r => Object.keys(r).reduce((state, k) => {
     const v = r[k];
     const t = typeof v;
-    if (t === 'string' || t === 'number' || t === 'boolean') {
+    if (k === 'meta' || t === 'string' || t === 'number' || t === 'boolean') {
       state[k] = v;
     }
     return state;
