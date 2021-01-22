@@ -169,6 +169,7 @@ Submit to process website with Google Lighthouse.
 | commands | `array<Commmand>` | optional | [DevTool Commands](https://chromedevtools.github.io/devtools-protocol/) to be executed prior to running Lighthouse |
 | commands[idx].command | `string` | **required** | [DevTool Command](https://chromedevtools.github.io/devtools-protocol/) to execute |
 | commands[idx].options | `object` | **required** | [DevTool Command Options](https://chromedevtools.github.io/devtools-protocol/) to supply command |
+| websiteMeta | `object` | optional | Object containing metadata that will be attached to final lighthouse results |
 
 
 ### Command

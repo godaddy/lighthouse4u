@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const papa = require('papaparse');
 
 module.exports = async (req, res) => {
-  const { report = true, queue: canQueue = true, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown' } = req.body;
+  const { report = true, queue: canQueue = true, batch, wait, url, headers, secureHeaders, commands, cookies, auditMode, samples, attempts, hostOverride, delay: delayStr, group = 'unknown', websiteMeta } = req.body;
 
   let documentRequests;
 
@@ -141,7 +141,8 @@ module.exports = async (req, res) => {
         delay,
         delayTime,
         state: 'requested',
-        createDate: Date.now()
+        createDate: Date.now(),
+        websiteMeta
       };
 
     });
