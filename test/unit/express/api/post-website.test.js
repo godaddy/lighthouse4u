@@ -10,10 +10,11 @@ const libSrc = path.resolve('./src/express/api/post-website.js');
 
 describe('/express/api/post-website', async () => {
 
-  let lib, mocks;
+  let lib, mocks, meta;
 
   beforeEach(() => {
     mocks = getMocks();
+    meta = { identifier: 'test' };
     mocks.request.body = {
       'url': 'https://www.google.com/',
       'throttling': 'mobile3G',
@@ -21,7 +22,8 @@ describe('/express/api/post-website', async () => {
       'headers': {},
       'secureHeaders': { secretKey: 'secretValue' },
       'cookies': [{ cookie1: 'c1', cookie2: { domain: 'domain', url: 'url', value: 'c2' } }],
-      'commands': [{ command: 'command' }]
+      'commands': [{ command: 'command' }],
+      'meta': meta
     };
     lib = proxyquire(libSrc, mocks);
   });
@@ -45,4 +47,8 @@ describe('/express/api/post-website', async () => {
     expect(mocks.response.sendStatus).to.be.calledWith(500);
   });
 
+  it('passes through meta', async () => {
+    await lib(mocks.request, mocks.response);
+    expect(mocks.response.send.args[0][0].meta).to.equal(meta);
+  });
 });
