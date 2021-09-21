@@ -1,6 +1,6 @@
 const getWebsite = require('../util/get-website');
 const convertDocToSVG = require('../../util/convert-doc-to-svg');
-const ReportGenerator = require('lighthouse/lighthouse-core/report/report-generator.js');
+const ReportGenerator = require('lighthouse/report/generator/report-generator.js');
 
 const SVG_DEFAULT_WIDTH = 640;
 const SVG_DEFAULT_HEIGHT = 180;
