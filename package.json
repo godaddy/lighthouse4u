@@ -44,7 +44,7 @@
     "chrome-launcher": "^0.13.4",
     "config-shield": "^0.2.3",
     "cross-fetch": "^3.1.4",
-    "ejs": "^3.1.6",
+    "ejs": "^3.1.7",
     "express": "^4.17.1",
     "json5": "^2.2.0",
     "lighthouse": "^8.4.0",
