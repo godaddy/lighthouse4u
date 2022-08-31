@@ -54,7 +54,7 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
-    "amqplib": "^0.5.6",
+    "amqplib": "^0.10.2",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-godaddy": "^4.0.1",
