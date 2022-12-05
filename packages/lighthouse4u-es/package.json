@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/godaddy/lighthouse4u#readme",
   "dependencies": {
-    "@elastic/elasticsearch": "^7.1.0",
+    "@elastic/elasticsearch": "^8.0.0",
     "lodash": "^4.17.11"
   }
 }
