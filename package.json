@@ -57,7 +57,7 @@
     "amqplib": "^0.10.2",
     "chai": "^4.3.4",
     "eslint": "^8.0.0",
-    "eslint-config-godaddy": "^4.0.1",
+    "eslint-config-godaddy": "^6.0.0",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-mocha": "^7.0.1",
     "fs-extra": "^9.1.0",
