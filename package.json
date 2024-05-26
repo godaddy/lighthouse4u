@@ -47,7 +47,7 @@
     "ejs": "^3.1.6",
     "express": "^4.19.2",
     "json5": "^2.2.0",
-    "lighthouse": "^9.6.8",
+    "lighthouse": "^10.0.0",
     "lodash": "^4.17.21",
     "papaparse": "^5.3.1",
     "tldjs": "^2.3.1",
