@@ -10,27 +10,25 @@ module.exports = class StoreES {
   }
 
   initialize() {
+    // ES 8: body flattened to root level
     const mapping = {
       index: this.config.index.name,
-      type: this.config.index.type,
-      body: {
-        settings: this.config.index.settings,
-        mappings: this.config.index.mappings
-      }
+      settings: this.config.index.settings,
+      mappings: this.config.index.mappings
     };
   
-    const promise = this.client.indices.create(mapping);	
-    console.log('Elasticsearch index created:', mapping);	
+    const promise = this.client.indices.create(mapping);
+    console.log('Elasticsearch index created:', mapping);
     return promise;
   }
 
   read(Key, { etag } = {}) {
     return this.client.get({
-      index: this.config.index.name,	
-      type: this.config.index.type,	
-      id: Key	
-    }).then(({ body }) => {
-      const ret = body._source;
+      index: this.config.index.name,
+      id: Key
+    }).then((response) => {
+      // ES 8 client returns body directly (no { body } wrapper)
+      const ret = response._source;
 
       ret.id = Key;
 
@@ -40,16 +38,15 @@ module.exports = class StoreES {
 
   list(query, { resumeKey, maxCount = 10, order = 'DESC' } = {}) {
     const q = convertQueryToES(query);
-    return this.client.search({	
-      index: this.config.index.name,	
-      type: this.config.index.type,	
+    // ES 8: body flattened to root level
+    return this.client.search({
+      index: this.config.index.name,
       q,
-      body: {	
-        size: maxCount,
-        sort: [{ createDate: { order: order.toLowerCase() }}]	
-      }	
-    }).then(({ body }) => {
-      const { hits } = body;
+      size: maxCount,
+      sort: [{ createDate: { order: order.toLowerCase() }}]
+    }).then((response) => {
+      // ES 8 client returns body directly (no { body } wrapper)
+      const { hits } = response;
       const files = hits.hits.map(hit => {
         const ret = hit._source;
         ret.id = hit._id;
@@ -69,13 +66,14 @@ module.exports = class StoreES {
   }
 
   write(data, { meta = {} } = {}) {
-    return this.client.index({	
-      index: this.config.index.name,	
-      type: this.config.index.type,	
+    // ES 8: body flattened to root level (use 'document' for index body)
+    return this.client.index({
+      index: this.config.index.name,
       id: data.id,
-      body: data	
-    }).then(({ body }) => {
-      data.id = body._id;
+      document: data
+    }).then((response) => {
+      // ES 8 client returns body directly (no { body } wrapper)
+      data.id = response._id;
 
       return data;
     });
